@@ -49,7 +49,7 @@ li {
 }
 
 .box {
-    width: 450px;
+    width: 400px;
     height: 540px;
     background-color: rgba(0,0,0,0.5);
     flex-direction: column;
@@ -71,7 +71,6 @@ li {
 }
 
 .modelo-carrassel {
-    height: 540px;
     border-radius: 10px;
     max-height: 100%;
     max-width: 100%;
@@ -143,6 +142,21 @@ section {
         margin-left: 30%;
     }
 }
+
+@media (max-width: 390px) {
+    #cbat {
+        margin-left: 20%;
+    }
+    #caixa {
+        margin-left: 20%;
+        margin-right: 10%;
+    }
+    #governo {
+        margin-left: 40%;
+    }
+}
+
+
 
 
 
