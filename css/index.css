@@ -1,0 +1,149 @@
+
+.logo {
+    height: 75px;
+}
+
+
+
+header > img {
+    
+    position: absolute;
+    margin-left: 40%;
+    width: 100%;
+}
+
+.card {
+    border-radius: 20px;
+}
+
+.dropdown-item:hover{
+    color: red;
+}
+
+a{
+    color: #000000;
+    font-size: 15px;
+}
+
+h1 {
+    font-size: 52px;
+}
+
+li {
+    list-style: none;
+}
+
+.texto {
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+}
+
+.container-carrossel {
+    width: 100%;
+    height: 560px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: white;
+}
+
+.box {
+    width: 450px;
+    height: 540px;
+    background-color: rgba(0,0,0,0.5);
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    box-sizing: border-box;
+}
+
+.item-a > a {
+    text-decoration: none;
+}
+
+.box:hover {
+    background-color: #17171d;
+    transform-style: preserve-3d;
+    transform: scale(1.02);
+    transition: all ease 0.3s;
+
+}
+
+.modelo-carrassel {
+    height: 540px;
+    border-radius: 10px;
+    max-height: 100%;
+    max-width: 100%;
+}
+
+.detalhes-carrossel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 300px;
+    top: -100em;
+}
+
+.rodape {
+    background-color: rgb(15, 8, 8);
+    color: white;
+    height: 200px;
+}
+
+.rodape > p {
+    margin-top: 5px;
+}
+
+.rodape > p > a {
+    color: white;
+    text-decoration: none;
+}
+
+.rodape > p {
+    text-align: center;
+    color: white;
+}
+
+.caroussel {
+    height: 380px;
+}
+
+.short-title > p {
+    color: #a6a6a6
+}
+
+section {
+    margin-top: 100px;
+    margin-bottom: 100px;
+}
+
+
+@media (max-width: 720px) {
+    #cbat {
+        margin-left: 20%;
+    }
+    #caixa {
+        margin-left: 8%;
+        margin-right: 5%;
+    }
+    #governo {
+        margin-left: 52px;
+    }
+}
+
+@media (max-width: 750px) {
+    #caixa {
+        margin-left: 10%;
+    }
+}
+
+@media (max-width: 970px) {
+    #caixa {
+        margin-left: 30%;
+    }
+}
+
+
+
+
