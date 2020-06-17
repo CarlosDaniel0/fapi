@@ -26,10 +26,24 @@ li {
 }
 
 .texto {
+    position: absolute;
     text-align: center;
     justify-content: center;
     align-items: center;
+    width: 100%;
+    color: white;
 }
+
+.titulo-carrossel {
+    margin-top: 100px;
+    margin-left: 1%;
+    
+}
+
+.texto:hover {
+    color: black;
+}
+
 
 
 /* .container-carrossel {
