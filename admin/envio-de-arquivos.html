@@ -39,7 +39,7 @@
       <hr class="sidebar-divider my-0">
 
       <!-- Nav Item - Dashboard -->
-      <li class="nav-item active">
+      <li class="nav-item">
         <a class="nav-link" href="index.html">
           <i class="far fa-file"></i>
           <span>Gerir páginas</span></a>
@@ -57,12 +57,11 @@
           <span>Gerir Tabelas</span></a>
       </li>
 
-      <li class="nav-item">
+      <li class="nav-item active">
         <a class="nav-link" href="envio-de-arquivos.html">
           <i class="fas fa-upload"></i>
           <span>Envio de Arquivos</span></a>
       </li>
-
 
       <!-- Divider -->
       <hr class="sidebar-divider d-none d-md-block">
@@ -267,14 +266,9 @@
         <!-- Begin Page Content -->
         <div class="container-fluid">
           <form action="">
-            <h3 class="text-gray-900">Editor</h3>
-            <div class="form-group">
-              <label for="">Título</label>
-              <input type="text"
-                class="form-control" name="" id="" aria-describedby="helpId" placeholder="">
-            </div>
+            <h3 class="text-gray-900">Enviar arquivos</h3>
 
-            <label for="" class="mt-2">Imagem</label>
+            <label for="" class="mt-2">Arquivo</label>
             <div class="input-group">
               <div class="input-group-prepend">
                 <span class="input-group-text" id="inputGroupFileAddon01">Enviar</span>
@@ -282,22 +276,17 @@
               <div class="custom-file">
                 <input type="file" class="custom-file-input" id="inputGroupFile01"
                   aria-describedby="inputGroupFileAddon01">
-                <label class="custom-file-label" for="inputGroupFile01">Escolher Imagem</label>
+                <label class="custom-file-label" for="inputGroupFile01">Escolher Arquivo</label>
               </div>
             </div>
 
-            <label for="texto" class="mt-4">Conteúdo</label>
-            <textarea name="texto" id="texto">
+            <div class="form-group mt-2">
+                <label for="">Link</label>
+                <input type="text"
+                  class="form-control" name="" id="" aria-describedby="helpId" placeholder="">
+              </div>
 
-            </textarea>
-
-            <label for="inputState" class="mt-4">Página de Destino</label>
-            <select id="inputState" class="form-control">
-              <option selected>Selecione...</option>
-              <option>...</option>
-            </select>
-
-            <input type="submit" class="btn btn-primary mt-4 justify-center" value="Cadastrar">
+            <input type="submit" class="btn btn-primary mt-4 justify-center" value="Enviar">
           </form>
         </div>
       <!-- End of Main Content -->
