@@ -266,7 +266,7 @@
         <!-- Begin Page Content -->
         <div class="container-fluid">
         <div class="mt-4 mb-4">
-          <h3 class="text-gray-900" style="text-align: center;">Resultado Competições</h3>
+          <h3 class="text-gray-900" style="text-align: center;">Campeonatos</h3>
         </div>
         <?php 
           if(isset($_SESSION['sucesso_delet'])):

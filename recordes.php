@@ -157,15 +157,17 @@
         <h2 style="text-align: center">Recordes</h2>
 
         <div class="form-group col-md-3">
-        <label for="exampleFormControlSelect1">Ano</label>
-        <select class="form-control filtrar" id="exampleFormControlSelect1">
+        <label for="select_ano">Ano</label>
+        <select class="form-control filtrar" id="select_ano">
           <?php
-              $query = "SELECT ano FROM ranking";
+              $query = "SELECT DISTINCT ano FROM recordes";
               $result = mysqli_query($conexao, $query);
-              $result = mysqli_fetch_array($result);
-              $duplicates = array_unique($result);
-              foreach($duplicates as $estab)
-              echo '<option value="'.$estab.'">'. $estab .'</option>';
+              while($resultado = mysqli_fetch_array($result))
+                if ($resultado['ano'] == date('Y')) {
+                  echo '<option value="'.$resultado['ano'].'" selected>'. $resultado['ano'] .'</option>';
+                } else { 
+                  echo '<option value="'.$resultado['ano'].'">'. $resultado['ano'] .'</option>';
+                }
               ?>
           </select>
         </div>

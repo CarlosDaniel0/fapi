@@ -13,7 +13,7 @@ $(function() {
                     <div class="card-body">
                         <div class="col" style="text-align: center;">
                         <h2>Estadual Masculino ${ dado[i]['ano'] }</h2>
-                        <a class="btn col-12 btn-outline-primary" href="admin/upload/${ dado[i]['documento'] }">Abrir</a>
+                        <a class="btn col-12 btn-outline-primary" href="files/documents/${ dado[i]['documento'] }">Abrir</a>
                         <small>${ dado[i]['data'] }</small>
                         </div>
                     </div>
@@ -27,7 +27,7 @@ $(function() {
                     <div class="card-body">
                         <div class="col" style="text-align: center;">
                         <h2>Estadual Feminino ${ dado[i]['ano'] }</h2>
-                        <a class="btn col-12 btn-outline-danger" href="admin/upload/${ dado[i]['documento'] }">Abrir</a>
+                        <a class="btn col-12 btn-outline-danger" href="files/documents/${ dado[i]['documento'] }">Abrir</a>
                         <small>${ dado[i]['data'] }</small>
                         </div>
                     </div>

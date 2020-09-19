@@ -2,10 +2,6 @@
   include('admin/conexao.php');
   include('var/variaveis.php');
 
-  $query = "SELECT * FROM noticia ORDER BY id DESC LIMIT 4";
-  $result = mysqli_query($conexao, $query);
-  //$noticia = mysqli_fetch_array($result);
-
   function data($data) {
     return date("d/m/Y", strtotime($data));
   }
