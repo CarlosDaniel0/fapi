@@ -1,20 +1,20 @@
 <?php
-  session_start();
-  // Verifica se o usuário está logado
-  include('verifica_login.php');
-  include('conexao.php');
-  include('../var/variaveis.php');
-
-  //Identifica o usuário logado de acordo com a base de dados.
-  $query = "SELECT nome, sobrenome FROM usuario WHERE usuario = '{$_SESSION['usuario']}'";
-
-  $resultado = mysqli_query($conexao, $query);
-
-  $nome = mysqli_fetch_assoc($resultado);
+    session_start();
+    // Verifica se o usuário está logado
+    include('verifica_login.php');
+    include('conexao.php');
+    include('../var/variaveis.php');
+  
+    //Identifica o usuário logado de acordo com a base de dados.
+    $query = "SELECT nome, sobrenome FROM usuario WHERE usuario = '{$_SESSION['usuario']}'";
+  
+    $resultado = mysqli_query($conexao, $query);
+  
+    $nome = mysqli_fetch_assoc($resultado);
 ?>
 
 <!DOCTYPE html>
-<html lang="pt_BR">
+<html lang="en">
 
 <head>
 
@@ -24,14 +24,82 @@
   <meta name="description" content="">
   <meta name="author" content="">
 
-  <title>Administrativo FAPI - Dashboard</title>
+  <title>Administrativo FAPI - Resultado de Competições</title>
 
   <!-- Custom fonts for this template-->
   <link href="../vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
   <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
-
+  <link rel="stylesheet" href="../css/upload.css">
   <!-- Custom styles for this template-->
-  <link href="../css/sb-admin-2.css" rel="stylesheet">
+  <link href="../css/sb-admin-2.min.css" rel="stylesheet">
+  <script>
+    var tabela = "campeonatos";
+    var coluna = 'documento';
+    var coluna_id = 'id';
+
+    var tituloCadastro = 'Cadastrar';
+    var tituloUpdate = 'Inserir Arquivo';
+
+    var bodyUpdate =
+    `<div class="col">
+        PDF
+        <div class="area-upload">
+          <label for="upload-file" class="label-upload">
+            <i class="fas fa-upload"></i>
+            <div class="texto">Clique ou arraste o arquivo</div>
+          </label>
+          <input type="file" id="upload-file" accept="image/jpg,image/png,application/pdf" multiple/>
+          <div class="lista-uploads"></div>
+        </div>
+      </div>
+    </div>`;
+
+    var bodyCadastro = 
+    `<form action="tabelas/cadastro_tabela" id="cadastro_tabela" method="post">
+      <div class="col-md-12" style="margin: auto;">
+        <div class="col">
+          Nome
+          <input class="col" name="nome" type="text" placeholder="Nome">
+        </div>
+        <div>
+        </div>
+        <div class="col">
+          <label for="campo">Campo</label>
+          <select name="campo" class="form-control" id="campo">
+            <option value="ESTADUAIS">ESTADUAIS</option>
+            <option value="FESTIVAIS">FESTIVAIS</option>
+            <option value="MARCHA ATLÉTICA">MARCHA ATLÉTICA</option>
+          </select>
+        </div>
+        <input class="col" name="ano" type="hidden" value="<?php echo date('Y'); ?>">
+        ${bodyUpdate}
+      </div>
+    </form>`;
+
+    var footerCadastro = 
+    `<a type="button" href="#" class="btn btn-primary" data-dismiss="modal">Fechar</a>
+     <a id="cadastrar" href="#" class="btn btn-success">Cadastrar</a>`;
+
+    var footerUpdate = 
+    `<a href="#" class="btn btn-success" id="atualizar-arquivo">Enviar</a>`;
+
+    // console.log(form);
+    // console.log(uploadFile);
+  </script>
+  <style>
+      #dialogo-dinamico {
+          margin-top: 0.20rem;
+          width: 88%;
+          min-width: 88%;
+          height: 88%;
+      }
+      #conteudo-dinamico {
+          height: 95%;
+          min-height: 95%;
+          height: auto;
+          border-radius: 0;
+      }
+  </style>
 </head>
 
 <body id="page-top">
@@ -54,7 +122,7 @@
       <hr class="sidebar-divider my-0">
 
       <!-- Nav Item - Dashboard -->
-      <li class="nav-item active">
+      <li class="nav-item">
         <a class="nav-link" href="dashboard.php">
           <i class="fas fa-newspaper"></i>
           <span>Gerir Notícias</span></a>
@@ -65,7 +133,7 @@
           <span>Gerir Páginas</span></a>
       </li>
 
-      <li class="nav-item">
+      <li class="nav-item active">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
           <i class="fas fa-fw fa-cog"></i>
           <span>Gerir Tabelas</span>
@@ -78,7 +146,7 @@
             <a class="collapse-item" href="arbitros-filiados">Árbitros Filiados</a>
             <a class="collapse-item" href="ranking">Ranking</a>
             <a class="collapse-item" href="recordes">Recordes</a>
-            <a class="collapse-item" href="campeonatos">Campeonatos</a>
+            <a class="collapse-item active" href="campeonatos">Campeonatos</a>
             <a class="collapse-item" href="competicoes">Lista de Competições</a>
             <a class="collapse-item" href="treinadores">Treinadores</a>
           </div>
@@ -104,6 +172,16 @@
       </li>
       <!-- End Menu -->
 
+      <!-- Divider -->
+      <hr class="sidebar-divider d-none d-md-block">
+
+      <!-- Sidebar Toggler (Sidebar) -->
+      <div class="text-center d-none d-md-inline">
+        <button class="rounded-circle border-0" id="sidebarToggle"></button>
+      </div>
+
+    </ul>
+    <!-- End of Sidebar -->
 
       <!-- Divider -->
       <hr class="sidebar-divider d-none d-md-block">
@@ -188,65 +266,80 @@
         <!-- Begin Page Content -->
         <div class="container-fluid">
         <div class="mt-4 mb-4">
-          <h3 class="text-gray-900" style="text-align: center;">Notícias</h3>
+          <h3 class="text-gray-900" style="text-align: center;">Resultado Competições</h3>
         </div>
         <?php 
-          if(isset($_SESSION['sucesso'])):
+          if(isset($_SESSION['sucesso_delet'])):
         ?>
           <div class="alert alert-success alert-dismissible fade show" role="alert">
-            <strong>Notícia apagada com sucesso!</strong>
+            <strong>Registro apagado com sucesso!</strong>
             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
         <?php 
           endif;
-          unset($_SESSION['sucesso']);
+          unset($_SESSION['sucesso_delet']);
         ?>
         <?php 
-          if(isset($_SESSION['falha'])):
+          if(isset($_SESSION['falha_delet'])):
+        ?>
+          <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <strong>Não foi possivel apagar o registro!</strong>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+        <?php 
+          endif;
+          unset($_SESSION['falha_delet']);
+        ?>
+        <?php 
+          if(isset($_SESSION['erro_delet'])):
+        ?>
+          <div class="alert alert-warning alert-dismissible fade show" role="alert">
+            <strong>Selecione um registro que deseja apagar.</strong>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+        <?php 
+          endif;
+          unset($_SESSION['erro_delet']);
+        ?>
+        <?php 
+          if(isset($_SESSION['sucesso_insert'])):
         ?>
           <div class="alert alert-success alert-dismissible fade show" role="alert">
-            <strong>Notícia apagada com sucesso!</strong>
+            <strong>Registro cadastrado com sucesso!</strong>
             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
         <?php 
           endif;
-          unset($_SESSION['falha']);
+          unset($_SESSION['sucesso_insert']);
         ?>
-        <?php 
-          if(isset($_SESSION['erro'])):
+                <?php 
+          if(isset($_SESSION['falha_insert'])):
         ?>
           <div class="alert alert-warning alert-dismissible fade show" role="alert">
-            <strong>Selecione a notícia que deseja apagar.</strong>
+            <strong>Não foi possível realizar o registro, tente novamente</strong>
             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
         <?php 
           endif;
-          unset($_SESSION['erro']);
+          unset($_SESSION['falha_insert']);
         ?>
-        <?php 
-          if(isset($_SESSION['noticia_invalida'])):
-        ?>
-          <div class="alert alert-warning alert-dismissible fade show" role="alert">
-            <strong>Selecione uma notícia para ediar!</strong>
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-        <?php 
-          endif;
-          unset($_SESSION['noticia_invalida']);
-        ?>
-        <table class="table">
+        <table class="table tabela-editavel">
           <thead class="thead-light">
             <tr>
               <th scope="col">ID</th>
-              <th scope="col" style="text-align: center;">Notícia</th>
+              <th scope="col" style="text-align: center;">Nome</th>
+              <th scope="col">Campo</th>
+              <th scope="col">PDF</th>
               <th scope="col">Ação</th>
             </tr>
           </thead>
@@ -257,35 +350,94 @@
               $pagina = (!empty($pagina_atual)) ? $pagina_atual : 1;
 
               //setar itens por página
-              $quantidade_resultados = 15;
+              $quantidade_resultados = 10;
 
               //Calcular início da vizualização
               $inicio = ($quantidade_resultados * $pagina) - $quantidade_resultados;
 
-              $result_noticia = "SELECT * FROM noticia LIMIT $inicio, $quantidade_resultados";
-              $resultado_noticias = mysqli_query($conexao, $result_noticia);
+              $result_tabela = "SELECT * FROM campeonatos LIMIT $inicio, $quantidade_resultados";
+              $resultado_tabelas = mysqli_query($conexao, $result_tabela);
 
-              while($row_noticia = mysqli_fetch_assoc($resultado_noticias)):
+              while($row_tabela = mysqli_fetch_assoc($resultado_tabelas)):
             ?>
             <tr>
-              <th scope="row"><?php echo $row_noticia['id']?></th>
-              <td><?php echo $row_noticia['titulo']?></td>
-              <td>
-                <div class="row">
-                  <a href="<?php echo "../noticia?id=" . $row_noticia['id'] ?>"class="btn btn-primary mr-2">Vizualizar</a>
-                  <a href="<?php echo "editor?noticia=" . $row_noticia['id'] ?>" class="btn btn-warning mr-2">Editar</a>
-                  <a href="<?php echo "apagar_noticia?id=" . $row_noticia['id'] ?>" class="btn btn-danger">Apagar</a>
-                </div>
-              </td>
+              <th scope="row"><?php echo $row_tabela['id']?></th>
+              <td <?php echo "data-id=". $row_tabela['id'] . " data-col=nome" ?>><?php echo $row_tabela['nome']?></td>
+              <td <?php echo "data-id=". $row_tabela['id'] . " data-col=campo" ?>><?php echo $row_tabela['campo']?></td>
+              <th>
+                  <?php 
+                  if (isset($row_tabela['documento'])): 
+                    if($row_tabela['documento'] != ''):
+                      $documento = "../files/documentos/" . $row_tabela['documento'];
+                  ?>
+                      <a class="btn btn-primary view-document" <?php echo "data-documento='" .$row_tabela['documento'] . "' data-id='" . $row_tabela['id'] ."'"  ?> href="#"><i class="fas fa-file-pdf"></i></a>
+                      <a class="btn btn-danger unset-file" <?php echo "data-arquivo='" . $row_tabela['documento'] . "' data-id='" .  $row_tabela['id']. "'" ?> href="#">Excluir PDF</a>
+                  <?php else:; ?>
+                  <!-- Button trigger modal -->
+                    <button type="button" class="btn btn-primary" id="update" <?php echo "data-id='" . $row_tabela['id'] ."'" ?> data-toggle="modal" data-target="#modalCadastro">
+                      Abrir
+                    </button>
+                  <?php endif; endif; ?>
+              </th>
+              <th>
+                  <a href="#" <?php echo "data-id='" . $row_tabela['id'] . "' data-arquivo='" . $row_tabela['documento'] . "'" ?> class="btn btn-danger apagar-registro">Apagar</a>
+              </th>
             </tr>
             <?php
               endwhile;
             ?>
           </tbody>
         </table>
+        
+        <!-- Modal Atualização de Imagem -->
+        <div class="modal fade" id="modalCadastro" tabindex="-1" role="dialog" aria-labelledby="modelTitleId" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                  <h5 class="modal-title" id="modal-cadastro-titulo"></h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+              </div>
+              <div class="modal-body" id="modal-cadastro-body">
 
+              </div>
+              <div class="modal-footer" id="modal-cadastro-footer">
+
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Modal Mostrar Documento PDF -->
+        <div id="show-document-modal" class="modal fade" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+          <div class="modal-dialog" id="dialogo-dinamico" role="document">
+            <div class="modal-content" id="conteudo-dinamico">
+              <div class="modal-header">
+                <h5 class="modal-title" id="show-document-title"></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <div class="embed-responsive embed-responsive-21by9">
+                  <iframe class="embed-responsive-item" id="show-document"></iframe>
+                </div>
+              </div>
+              <!-- <div class="modal-footer">
+                <button type="button" class="btn btn-success" data-dismiss="modal">Fechar</button>
+                <a href="#" class="btn btn-info" id="show-new-page">Ver em nova página</a>
+              </div> -->
+            </div>
+          </div>
+        </div>
+        
+        <!-- Início da Paginação -->
+        <div class="row mt-4 d-flex justify-content-center">
+          <nav aria-label="Navegação de página exemplo">
+            <ul class="pagination">
         <?php 
-          $result_pg = "SELECT COUNT(id) AS num_result FROM noticia";
+          $result_pg = "SELECT COUNT(id) AS num_result FROM campeonatos";
           $resultado_pg = mysqli_query($conexao, $result_pg);
           $row_pg = mysqli_fetch_assoc($resultado_pg);
           
@@ -297,29 +449,37 @@
           for($pag_ant = $pagina - $maximo_links; $pag_ant <= $pagina - 1; $pag_ant++):   
             if ($pag_ant >= 1) :
         ?>
-            <a class='mr-2 btn btn-primary' href='<?php echo "dashboard.php?pagina=$pag_ant" ?>'><?php echo "$pag_ant" ?></a>
+            <li class="page-item"><a class='page-link' href='<?php echo "campeonatos?pagina=$pag_ant" ?>'><?php echo "$pag_ant" ?></a></li>
         <?php 
             endif;
           endfor;
 
           if ($pagina_atual >= 1):  
         ?>
-            <div class='mr-2 btn btn-primary active' style="cursor: default"><?php echo "$pagina_atual" ?></div>
+            <li class="page-item active"><a class='page-link' style="cursor: default"><?php echo "$pagina_atual" ?></a></li>
         <?php 
           endif;
 
           for($pag_dep = $pagina + 1; $pag_dep <= $pagina + $maximo_links; $pag_dep++):
             if ($pag_dep <= $quantidade_paginas) :
         ?>
-            <a class='btn btn-primary' href='<?php echo "dashboard.php?pagina=$pag_dep" ?>'><?php echo "$pag_dep" ?></a>
+            <li class="page-item"><a class='page-link' href='<?php echo "campeonatos?pagina=$pag_dep" ?>'><?php echo "$pag_dep" ?></a></li>
         <?php 
             endif;
           endfor;
         ?>
+            </ul>
+          </nav>
+        </div>
+        <!-- Fim da Paginação -->
 
         </br>
-        <a href="editor.php" class="mt-4 btn btn-success">Criar</a>
-        </div>
+        <!-- <a href="tabelas?id=" class="mt-4 btn btn-success">Criar</a> -->
+        <!-- Button trigger modal -->
+        <button type="button" class="btn btn-primary mt-4" id="cadastro" data-toggle="modal" data-target="#modalCadastro">
+          Cadastrar
+        </button>
+
       <!-- End of Main Content -->
 
       <!-- Footer -->
@@ -371,6 +531,13 @@
 
   <!-- Custom scripts for all pages-->
   <script src="../js/sb-admin-2.min.js"></script>
+  <script src="../js/upload_file.js"></script>
+  <script src="../js/tabela-editavel.js"></script>
+  <script src="../js/apagar_registro_tabela.js"></script>
+  <script src="../js/update-file.js"></script>
+  <script src="../js/modal-dinamico.js"></script>
+  <script src="../js/apagar_arquivo.js"></script>
+  <script src="../js/modal-dinamico.js"></script>
 </body>
 
 </html>

@@ -1,0 +1,49 @@
+#conteudo p {
+    font-size: 1.2rem;
+}
+
+blockquote > p{
+    padding-left: 2.5rem;
+    font-weight: 600;
+    border-left: 4px solid #0cc43a;
+    font-size: 1.3rem;
+}
+
+#conteudo a {
+    font-weight: 500;
+    color: green;
+    font-size: 1.2rem;
+}
+
+#conteudo a:hover {
+    text-decoration-line: underline;
+}
+
+.titulo {
+    font-size: 3.5rem;
+    font-weight: 700;
+}
+
+.informacao {
+    color: #555;
+    font-size: 1.3rem;
+}
+
+@media (max-width: 720px) {
+    .titulo {
+        font-size: 2.2rem;
+    }
+
+    .informacao {
+        color: #555;
+        font-size: 1.0rem;
+    }
+
+    #conteudo p {
+        font-size: 1.1rem;
+    }
+    
+    blockquote {
+        font-size: 1.2rem;
+    }
+}

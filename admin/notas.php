@@ -1,20 +1,24 @@
 <?php
-  session_start();
-  // Verifica se o usuário está logado
-  include('verifica_login.php');
-  include('conexao.php');
-  include('../var/variaveis.php');
-
-  //Identifica o usuário logado de acordo com a base de dados.
-  $query = "SELECT nome, sobrenome FROM usuario WHERE usuario = '{$_SESSION['usuario']}'";
-
-  $resultado = mysqli_query($conexao, $query);
-
-  $nome = mysqli_fetch_assoc($resultado);
+    session_start();
+    // Verifica se o usuário está logado
+    include('verifica_login.php');
+    include('conexao.php');
+    include('../var/variaveis.php');
+  
+    //Identifica o usuário logado de acordo com a base de dados.
+    $query = "SELECT nome, sobrenome FROM usuario WHERE usuario = '{$_SESSION['usuario']}'";
+  
+    $resultado = mysqli_query($conexao, $query);
+  
+    $nome = mysqli_fetch_assoc($resultado);
+    
+    function data($data) {
+      return date("d/m/Y", strtotime($data));
+    }
 ?>
 
 <!DOCTYPE html>
-<html lang="pt_BR">
+<html lang="en">
 
 <head>
 
@@ -24,14 +28,24 @@
   <meta name="description" content="">
   <meta name="author" content="">
 
-  <title>Administrativo FAPI - Dashboard</title>
+  <title>Administrativo FAPI - Notas</title>
 
   <!-- Custom fonts for this template-->
   <link href="../vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
   <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
 
   <!-- Custom styles for this template-->
-  <link href="../css/sb-admin-2.css" rel="stylesheet">
+  <link href="../css/sb-admin-2.min.css" rel="stylesheet">
+  <script>
+    var tabela = "arquivos_notas";
+    var coluna_origem = "id_nota";
+    var tabela_relacionada = "notas_has_arquivos";
+    var id_origem = "<?php echo $_GET['id'] ?>";
+    var campos_relacionamento = ['id_nota', 'id_arquivo'];
+    var all = '';
+    var coluna_id = "id_arquivo";
+
+  </script>
 </head>
 
 <body id="page-top">
@@ -54,7 +68,7 @@
       <hr class="sidebar-divider my-0">
 
       <!-- Nav Item - Dashboard -->
-      <li class="nav-item active">
+      <li class="nav-item">
         <a class="nav-link" href="dashboard.php">
           <i class="fas fa-newspaper"></i>
           <span>Gerir Notícias</span></a>
@@ -85,7 +99,7 @@
         </div>
       </li>
 
-      <li class="nav-item">
+      <li class="nav-item active">
         <a class="nav-link" href="notas">
           <i class="fas fa-sticky-note"></i>
           <span>Notas</span></a>
@@ -103,7 +117,6 @@
           <span>Solicitações</span></a>
       </li>
       <!-- End Menu -->
-
 
       <!-- Divider -->
       <hr class="sidebar-divider d-none d-md-block">
@@ -186,15 +199,21 @@
         <!-- End of Topbar -->
 
         <!-- Begin Page Content -->
+        <?php 
+          $query_notas = "SELECT * FROM notas";
+          $result_notas = mysqli_query($conexao, $query_notas);
+
+          $query_documentos_notas = "";
+        ?>
         <div class="container-fluid">
         <div class="mt-4 mb-4">
-          <h3 class="text-gray-900" style="text-align: center;">Notícias</h3>
+          <h3 class="text-gray-900" style="text-align: center;">Notas Oficiais</h3>
         </div>
         <?php 
           if(isset($_SESSION['sucesso'])):
         ?>
           <div class="alert alert-success alert-dismissible fade show" role="alert">
-            <strong>Notícia apagada com sucesso!</strong>
+            <strong>Nota apagada com sucesso!</strong>
             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
@@ -206,8 +225,8 @@
         <?php 
           if(isset($_SESSION['falha'])):
         ?>
-          <div class="alert alert-success alert-dismissible fade show" role="alert">
-            <strong>Notícia apagada com sucesso!</strong>
+          <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <strong>Falha ao apagar nota!</strong>
             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
@@ -220,7 +239,7 @@
           if(isset($_SESSION['erro'])):
         ?>
           <div class="alert alert-warning alert-dismissible fade show" role="alert">
-            <strong>Selecione a notícia que deseja apagar.</strong>
+            <strong>Selecione a nota que deseja apagar.</strong>
             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
@@ -230,23 +249,24 @@
           unset($_SESSION['erro']);
         ?>
         <?php 
-          if(isset($_SESSION['noticia_invalida'])):
+          if(isset($_SESSION['nota_invalida'])):
         ?>
           <div class="alert alert-warning alert-dismissible fade show" role="alert">
-            <strong>Selecione uma notícia para ediar!</strong>
+            <strong>Selecione uma nota para ediar!</strong>
             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
         <?php 
           endif;
-          unset($_SESSION['noticia_invalida']);
+          unset($_SESSION['nota_invalida']);
         ?>
         <table class="table">
           <thead class="thead-light">
             <tr>
               <th scope="col">ID</th>
-              <th scope="col" style="text-align: center;">Notícia</th>
+              <th scope="col" style="text-align: center;">Nota</th>
+              <th scope="col">Título</th>
               <th scope="col">Ação</th>
             </tr>
           </thead>
@@ -262,19 +282,20 @@
               //Calcular início da vizualização
               $inicio = ($quantidade_resultados * $pagina) - $quantidade_resultados;
 
-              $result_noticia = "SELECT * FROM noticia LIMIT $inicio, $quantidade_resultados";
-              $resultado_noticias = mysqli_query($conexao, $result_noticia);
+              $result_nota = "SELECT * FROM notas LIMIT $inicio, $quantidade_resultados";
+              $resultado_notas = mysqli_query($conexao, $result_nota);
 
-              while($row_noticia = mysqli_fetch_assoc($resultado_noticias)):
+              while($row_nota = mysqli_fetch_assoc($resultado_notas)):
             ?>
             <tr>
-              <th scope="row"><?php echo $row_noticia['id']?></th>
-              <td><?php echo $row_noticia['titulo']?></td>
+              <th scope="row"><?php echo $row_nota['id_nota']?></th>
+              <td><?php echo $row_nota['nota']?></td>
+              <td><?php echo $row_nota['titulo']?></td>
               <td>
                 <div class="row">
-                  <a href="<?php echo "../noticia?id=" . $row_noticia['id'] ?>"class="btn btn-primary mr-2">Vizualizar</a>
-                  <a href="<?php echo "editor?noticia=" . $row_noticia['id'] ?>" class="btn btn-warning mr-2">Editar</a>
-                  <a href="<?php echo "apagar_noticia?id=" . $row_noticia['id'] ?>" class="btn btn-danger">Apagar</a>
+                  <a href="<?php echo "../notas-oficiais" ?>"class="btn btn-primary mr-2">Vizualizar</a>
+                  <a href="<?php echo "editor-notas?id=" . $row_nota['id_nota'] ?>" class="btn btn-warning mr-2">Editar</a>
+                  <a href="<?php echo "apagar_nota?id=" . $row_nota['id_nota'] ?>" class="btn btn-danger">Apagar</a>
                 </div>
               </td>
             </tr>
@@ -283,9 +304,13 @@
             ?>
           </tbody>
         </table>
-
+        
+        <!-- Início Paginação -->
+        <div class="row mt-4 d-flex justify-content-center">
+          <nav aria-label="Navegação de página exemplo">
+            <ul class="pagination">
         <?php 
-          $result_pg = "SELECT COUNT(id) AS num_result FROM noticia";
+          $result_pg = "SELECT COUNT(id_nota) AS num_result FROM notas";
           $resultado_pg = mysqli_query($conexao, $result_pg);
           $row_pg = mysqli_fetch_assoc($resultado_pg);
           
@@ -297,30 +322,75 @@
           for($pag_ant = $pagina - $maximo_links; $pag_ant <= $pagina - 1; $pag_ant++):   
             if ($pag_ant >= 1) :
         ?>
-            <a class='mr-2 btn btn-primary' href='<?php echo "dashboard.php?pagina=$pag_ant" ?>'><?php echo "$pag_ant" ?></a>
+            <li class="page-item"><a class='page-link' href='<?php echo "notas?pagina=$pag_ant" ?>'><?php echo "$pag_ant" ?></a></li>
         <?php 
             endif;
           endfor;
 
           if ($pagina_atual >= 1):  
         ?>
-            <div class='mr-2 btn btn-primary active' style="cursor: default"><?php echo "$pagina_atual" ?></div>
+            <li class="page-item active"><a class='page-link' style="cursor: default"><?php echo "$pagina_atual" ?></a></li>
         <?php 
           endif;
 
           for($pag_dep = $pagina + 1; $pag_dep <= $pagina + $maximo_links; $pag_dep++):
             if ($pag_dep <= $quantidade_paginas) :
         ?>
-            <a class='btn btn-primary' href='<?php echo "dashboard.php?pagina=$pag_dep" ?>'><?php echo "$pag_dep" ?></a>
+            <li class="page-item"><a class='page-link' href='<?php echo "notas?pagina=$pag_dep" ?>'><?php echo "$pag_dep" ?></a></li>
         <?php 
             endif;
           endfor;
         ?>
+            </ul>
+          </nav>
+        </div>
+        <!-- Fim Paginação -->
 
         </br>
-        <a href="editor.php" class="mt-4 btn btn-success">Criar</a>
+        <!-- Button trigger modal -->
+        <button type="button" class="btn btn-primary mt-4" data-toggle="modal" data-target="#exampleModal">
+          Cadastrar
+        </button>
+        </div>
+        </br>
+        <!-- <a href="tabelas?id=" class="mt-4 btn btn-success">Criar</a> -->
+        <!-- Button trigger modal -->
         </div>
       <!-- End of Main Content -->
+
+      <!-- Modal de Cadasrtro-->
+      <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Cadastrar</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <form action="tabelas/cadastro_tabela" id="cadastro_tabela" method="post">
+                  <div class="col-md-8" style="margin: auto;">
+                    <div class="col">
+                      Nota
+                      <input class="col" name="nota" type="text" placeholder="Nota">
+                    </div>
+                    <div class="col">
+                      Título
+                      <input class="col" name="titulo" type="text" placeholder="Título">
+                    </div>
+                    <input class="col" name="ano" type="hidden" value="<?php echo date('Y') ?>">
+                  </div>
+              </div>
+              <div class="modal-footer">
+                <a type="button" href="#" class="btn btn-primary" data-dismiss="modal">Fechar</a>
+                <button type="submit" href="#" id="cadastrar" class="btn btn-success">Avançar</button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Fim de modal de Cadastro -->
 
       <!-- Footer -->
       <footer class="sticky-footer bg-white">
@@ -371,6 +441,8 @@
 
   <!-- Custom scripts for all pages-->
   <script src="../js/sb-admin-2.min.js"></script>
+  <script src="../js/io_notas.js"></script>
+  <script src="../js/apagar_arquivo_relacionado.js"></script>
 </body>
 
 </html>

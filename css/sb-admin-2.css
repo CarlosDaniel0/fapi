@@ -10803,19 +10803,19 @@ a:focus {
 }
 
 .bg-login-image {
-  background: url("https://static.cdn.pleno.news/2019/09/plenonews_69429078_424547198412357_2917137491588994799_n-1024x684.jpg");
+  background: url("../img/login.png");
   background-position: center;
   background-size: cover;
 }
 
 .bg-register-image {
-  background: url("https://source.unsplash.com/Mv9hjnEUHR4/600x800");
+  background: url("../img/login.png");
   background-position: center;
   background-size: cover;
 }
 
 .bg-password-image {
-  background: url("https://source.unsplash.com/oWTW-jNGl9I/600x800");
+  background: url("../img/login.png");
   background-position: center;
   background-size: cover;
 }

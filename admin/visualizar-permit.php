@@ -11,10 +11,26 @@
   $resultado = mysqli_query($conexao, $query);
 
   $nome = mysqli_fetch_assoc($resultado);
+
+  $id = filter_input(INPUT_GET, 'id', FILTER_SANITIZE_NUMBER_INT);
+    
+  if ($id != 0) {
+    $query = "SELECT * FROM evento WHERE id_evento = $id";
+    $result = mysqli_query($conexao, $query);
+    $evento = mysqli_fetch_assoc($result);
+
+    $query_distancias = "SELECT d.nome FROM distancia AS d
+      INNER JOIN evento_has_distancia AS e ON (d.id_distancia = e.id_distancia)
+      WHERE e.id_evento = 1";
+  }
+
+  function data($data) {
+    return date("d/m/Y", strtotime($data));
+  }
 ?>
 
 <!DOCTYPE html>
-<html lang="pt_BR">
+<html lang="en">
 
 <head>
 
@@ -24,14 +40,31 @@
   <meta name="description" content="">
   <meta name="author" content="">
 
-  <title>Administrativo FAPI - Dashboard</title>
+  <title>Administrativo FAPI - Visualizar Pérmit</title>
 
   <!-- Custom fonts for this template-->
   <link href="../vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
   <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
 
   <!-- Custom styles for this template-->
-  <link href="../css/sb-admin-2.css" rel="stylesheet">
+  <link href="../css/sb-admin-2.min.css" rel="stylesheet">
+  <script>
+    function doEnviar() { //inicio da funcao
+    
+        //pega o formulário como elemento
+        var formulario = document.getElementById('editor');
+        
+        //monta os parametros de get
+        var parsGet = '?id=<?php echo $id;?>';
+        // parsGet = parsGet + '&titulo=' + document.getElementById('titulo').value + '&autor=' + document.getElementById('autor').value + '&texto=' + document.getElementById('texto').value;
+        
+        //muda o parâmetro action do formulário com os parmetros get
+        formulario.action = "cadastro_pagina.php"+ parsGet;
+        
+        //envia o formulário
+        formulario.submit();
+    }
+  </script> 
 </head>
 
 <body id="page-top">
@@ -40,7 +73,7 @@
   <div id="wrapper">
 
     <!-- Sidebar -->
-    <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion toggled" id="accordionSidebar">
+    <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark  toggled" id="accordionSidebar">
 
       <!-- Sidebar - Brand -->
       <a class="sidebar-brand d-flex align-items-center justify-content-center" href="dashboard">
@@ -54,7 +87,7 @@
       <hr class="sidebar-divider my-0">
 
       <!-- Nav Item - Dashboard -->
-      <li class="nav-item active">
+      <li class="nav-item">
         <a class="nav-link" href="dashboard.php">
           <i class="fas fa-newspaper"></i>
           <span>Gerir Notícias</span></a>
@@ -103,6 +136,17 @@
           <span>Solicitações</span></a>
       </li>
       <!-- End Menu -->
+
+      <!-- Divider -->
+      <hr class="sidebar-divider d-none d-md-block">
+
+      <!-- Sidebar Toggler (Sidebar) -->
+      <div class="text-center d-none d-md-inline">
+        <button class="rounded-circle border-0" id="sidebarToggle"></button>
+      </div>
+
+    </ul>
+    <!-- End of Sidebar -->
 
 
       <!-- Divider -->
@@ -187,138 +231,139 @@
 
         <!-- Begin Page Content -->
         <div class="container-fluid">
-        <div class="mt-4 mb-4">
-          <h3 class="text-gray-900" style="text-align: center;">Notícias</h3>
-        </div>
-        <?php 
-          if(isset($_SESSION['sucesso'])):
-        ?>
-          <div class="alert alert-success alert-dismissible fade show" role="alert">
-            <strong>Notícia apagada com sucesso!</strong>
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-        <?php 
-          endif;
-          unset($_SESSION['sucesso']);
-        ?>
-        <?php 
-          if(isset($_SESSION['falha'])):
-        ?>
-          <div class="alert alert-success alert-dismissible fade show" role="alert">
-            <strong>Notícia apagada com sucesso!</strong>
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-        <?php 
-          endif;
-          unset($_SESSION['falha']);
-        ?>
-        <?php 
-          if(isset($_SESSION['erro'])):
-        ?>
-          <div class="alert alert-warning alert-dismissible fade show" role="alert">
-            <strong>Selecione a notícia que deseja apagar.</strong>
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-        <?php 
-          endif;
-          unset($_SESSION['erro']);
-        ?>
-        <?php 
-          if(isset($_SESSION['noticia_invalida'])):
-        ?>
-          <div class="alert alert-warning alert-dismissible fade show" role="alert">
-            <strong>Selecione uma notícia para ediar!</strong>
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-        <?php 
-          endif;
-          unset($_SESSION['noticia_invalida']);
-        ?>
-        <table class="table">
-          <thead class="thead-light">
-            <tr>
-              <th scope="col">ID</th>
-              <th scope="col" style="text-align: center;">Notícia</th>
-              <th scope="col">Ação</th>
-            </tr>
-          </thead>
-          <tbody>
-            <?php 
-              // Receber o número da página
-              $pagina_atual = filter_input(INPUT_GET, 'pagina', FILTER_SANITIZE_NUMBER_INT) == 0 ? 1 : filter_input(INPUT_GET, 'pagina', FILTER_SANITIZE_NUMBER_INT);
-              $pagina = (!empty($pagina_atual)) ? $pagina_atual : 1;
+          <h3 class="text-gray-900" style="text-align: center;">Visualizar</h3>
 
-              //setar itens por página
-              $quantidade_resultados = 15;
-
-              //Calcular início da vizualização
-              $inicio = ($quantidade_resultados * $pagina) - $quantidade_resultados;
-
-              $result_noticia = "SELECT * FROM noticia LIMIT $inicio, $quantidade_resultados";
-              $resultado_noticias = mysqli_query($conexao, $result_noticia);
-
-              while($row_noticia = mysqli_fetch_assoc($resultado_noticias)):
-            ?>
-            <tr>
-              <th scope="row"><?php echo $row_noticia['id']?></th>
-              <td><?php echo $row_noticia['titulo']?></td>
-              <td>
-                <div class="row">
-                  <a href="<?php echo "../noticia?id=" . $row_noticia['id'] ?>"class="btn btn-primary mr-2">Vizualizar</a>
-                  <a href="<?php echo "editor?noticia=" . $row_noticia['id'] ?>" class="btn btn-warning mr-2">Editar</a>
-                  <a href="<?php echo "apagar_noticia?id=" . $row_noticia['id'] ?>" class="btn btn-danger">Apagar</a>
+          <div class="card">
+            <!-- Corpo -->
+            <div class="card-body">
+              <!-- Título -->
+              <h4 class="text-dark">Evento</h4>
+              <div class="col">
+                <div class="row text-dark">
+                  <b>Nome do Evento:</b>
+                  <?php echo $evento['nome_evento'] ?>
                 </div>
-              </td>
-            </tr>
-            <?php
-              endwhile;
-            ?>
-          </tbody>
-        </table>
+              </div>
 
-        <?php 
-          $result_pg = "SELECT COUNT(id) AS num_result FROM noticia";
-          $resultado_pg = mysqli_query($conexao, $result_pg);
-          $row_pg = mysqli_fetch_assoc($resultado_pg);
+              <!-- Cidade e data de realização -->
+              <div class="row text-dark">
+                <div class="col-md-7">
+                  <b>Cidade:</b>
+                  <?php echo $evento['cidade'] ?>
+                </div>
+                <div class="col">
+                  <b>Data de realização:</b>
+                  <?php echo data($evento['data_realizacao']) ?>
+                </div>
+              </div>
           
-          // Quantidade de páginas
-          $quantidade_paginas = ceil($row_pg['num_result'] / $quantidade_resultados);
+              <!-- Tipo de pérmit -->
+              <div class="col">
+                <div class="row text-dark">
+                  <b>Tipo de Pérmit:</b>
+                  <?php if($evento['classe'] == 'B') {
+                    echo " CLASSE B (com resultados reconhecidos pela FAPI e CBAt)";
+                  } else if ($evento['classe'] == 'C') {
+                    echo " CLASSE C (apenas para cumprimento do CTB)";
+                  } ?>
+                </div>
+              </div>
 
-          // Limitar os links antes e depois
-          $maximo_links = 2;
-          for($pag_ant = $pagina - $maximo_links; $pag_ant <= $pagina - 1; $pag_ant++):   
-            if ($pag_ant >= 1) :
-        ?>
-            <a class='mr-2 btn btn-primary' href='<?php echo "dashboard.php?pagina=$pag_ant" ?>'><?php echo "$pag_ant" ?></a>
-        <?php 
-            endif;
-          endfor;
+              <!-- Hora e Endereço -->
+              <div class="row text-dark">
+                <div class="col-md-7">
+                  <b>Endereço do Local da Largada:</b>
+                  <?php echo $evento['endereco'] ?>
+                </div>
+                <div class="col">
+                  <b>Hora da Largada:</b>
+                  <?php echo data($evento['hora']) ?>
+                </div>
+              </div>
 
-          if ($pagina_atual >= 1):  
-        ?>
-            <div class='mr-2 btn btn-primary active' style="cursor: default"><?php echo "$pagina_atual" ?></div>
-        <?php 
-          endif;
+               <!-- Número de atletas -->
+               <div class="col text-dark">
+                <div class="row">
+                  <b>Número de Atletas:</b> 
+                  <?php echo $evento['numero_atletas'] ?>
+                </div>
+              </div>
 
-          for($pag_dep = $pagina + 1; $pag_dep <= $pagina + $maximo_links; $pag_dep++):
-            if ($pag_dep <= $quantidade_paginas) :
-        ?>
-            <a class='btn btn-primary' href='<?php echo "dashboard.php?pagina=$pag_dep" ?>'><?php echo "$pag_dep" ?></a>
-        <?php 
-            endif;
-          endfor;
-        ?>
+              <hr>
 
-        </br>
-        <a href="editor.php" class="mt-4 btn btn-success">Criar</a>
+              <!-- Nome da Entidade e Número de atletas -->
+              <h4 class="text-dark">Entidade</h4>
+              <div class="row text-dark">
+                <div class="col-md-7">
+                  <b>Nome da entidade:</b>
+                  <?php echo $evento['nome_entidade'] ?>
+                </div>
+                <div class="col">
+                  <b>CNPJ:</b>
+                  <?php echo $evento['cnpj'] ?>
+                </div>
+              </div>
+
+              <!-- Nome e Telefone do Responsável pela entidade-->
+              <div class="row text-dark">
+                <div class="col-md-7">
+                  <b>Nome do Responsável:</b>
+                  <?php echo $evento['nome_responsavel'] ?>
+                </div>
+                <div class="col">
+                  <b>Telefone:</b>
+                  <?php echo $evento['telefone'] ?>
+                </div>
+              </div>
+              
+              <!-- Email do Responsável -->
+              <div class="col text-dark">
+                <div class="row">
+                  <b>E-mail do responsável:</b> 
+                  <?php echo $evento['email_responsavel'] ?>
+                </div>
+              </div>
+
+              <hr>
+
+              <!-- Nome do Responsável do Formulário -->
+              <h4 class="text-dark">Responsável</h4>
+              <div class="col text-dark">
+                <div class="row">
+                  <b>Nome do Responsável pelo Formulário:</b>
+                  <?php echo $evento['nome_responsavel_formulario'] ?>
+                </div>
+              </div>
+            </div>
+            <!-- Footer -->
+            <div class="card-footer">
+              <h4 class="card-header text-dark">Arquivos</h4>
+              <div class="row">
+                <?php 
+                $query_documentos = "SELECT a.nome FROM arquivos_eventos AS a
+                INNER JOIN evento_has_arquivos AS e ON (a.id_arquivo = e.id_arquivo)
+                WHERE e.id_evento = $id";
+                $result_docs = mysqli_query($conexao, $query_documentos);
+
+                while ($documento = mysqli_fetch_assoc($result_docs)) {
+                if(isset($documento['nome'])) {
+                ?>
+
+                <div class="col-md-2">
+                  <div class="card-body">
+                    <i class="fas fa-file-pdf" style="color: red; font-size: 6.5rem;"></i>
+                    <p><?php echo $documento['nome'] ?></p>
+                    <a class="btn btn-primary" href="<?php echo "../files/uploads/" . $documento['nome'] ?>" download>Baixar</a>
+                  </div>
+                 </div>
+
+                <?php 
+                  } }
+                ?>
+              </div>
+            </div>
+          </div>
+          <!-- <a href="#" class="btn btn-success mt-4">Enviar E-mail</a> -->
         </div>
       <!-- End of Main Content -->
 
@@ -371,6 +416,17 @@
 
   <!-- Custom scripts for all pages-->
   <script src="../js/sb-admin-2.min.js"></script>
+
+  <!--script src="../js/ckeditor/ckeditor.js"></script-->
+  <!--script src="../js/ckfinder/ckfinder.js"></script-->
+  <script src="https://cdn.tiny.cloud/1/3k5ggk1wq314sjxtshxanxii7pm9kky1h8taepkvhvnhjvuy/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
+  <script src="../js/tinymce-init.js"></script>
+  <script>
+        $('input[type="file"]').change(function(e){
+        var fileName = e.target.files[0].name;
+        $('.custom-file-label').html(fileName);
+    });
+  </script>
 </body>
 
 </html>

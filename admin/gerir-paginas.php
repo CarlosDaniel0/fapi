@@ -14,7 +14,7 @@
 ?>
 
 <!DOCTYPE html>
-<html lang="pt_BR">
+<html lang="en">
 
 <head>
 
@@ -31,7 +31,7 @@
   <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
 
   <!-- Custom styles for this template-->
-  <link href="../css/sb-admin-2.css" rel="stylesheet">
+  <link href="../css/sb-admin-2.min.css" rel="stylesheet">
 </head>
 
 <body id="page-top">
@@ -54,12 +54,12 @@
       <hr class="sidebar-divider my-0">
 
       <!-- Nav Item - Dashboard -->
-      <li class="nav-item active">
+      <li class="nav-item">
         <a class="nav-link" href="dashboard.php">
           <i class="fas fa-newspaper"></i>
           <span>Gerir Notícias</span></a>
       </li>
-      <li class="nav-item">
+      <li class="nav-item active">
         <a class="nav-link" href="gerir-paginas.php">
           <i class="far fa-file"></i>
           <span>Gerir Páginas</span></a>
@@ -188,13 +188,13 @@
         <!-- Begin Page Content -->
         <div class="container-fluid">
         <div class="mt-4 mb-4">
-          <h3 class="text-gray-900" style="text-align: center;">Notícias</h3>
+          <h3 class="text-gray-900" style="text-align: center;">Páginas</h3>
         </div>
         <?php 
           if(isset($_SESSION['sucesso'])):
         ?>
           <div class="alert alert-success alert-dismissible fade show" role="alert">
-            <strong>Notícia apagada com sucesso!</strong>
+            <strong>Página apagada com sucesso!</strong>
             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
@@ -207,7 +207,7 @@
           if(isset($_SESSION['falha'])):
         ?>
           <div class="alert alert-success alert-dismissible fade show" role="alert">
-            <strong>Notícia apagada com sucesso!</strong>
+            <strong>Página apagada com sucesso!</strong>
             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
@@ -220,7 +220,7 @@
           if(isset($_SESSION['erro'])):
         ?>
           <div class="alert alert-warning alert-dismissible fade show" role="alert">
-            <strong>Selecione a notícia que deseja apagar.</strong>
+            <strong>Selecione a página que deseja apagar.</strong>
             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
@@ -233,7 +233,7 @@
           if(isset($_SESSION['noticia_invalida'])):
         ?>
           <div class="alert alert-warning alert-dismissible fade show" role="alert">
-            <strong>Selecione uma notícia para ediar!</strong>
+            <strong>Selecione uma página para ediar!</strong>
             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
@@ -246,7 +246,7 @@
           <thead class="thead-light">
             <tr>
               <th scope="col">ID</th>
-              <th scope="col" style="text-align: center;">Notícia</th>
+              <th scope="col" style="text-align: center;">Página</th>
               <th scope="col">Ação</th>
             </tr>
           </thead>
@@ -262,19 +262,19 @@
               //Calcular início da vizualização
               $inicio = ($quantidade_resultados * $pagina) - $quantidade_resultados;
 
-              $result_noticia = "SELECT * FROM noticia LIMIT $inicio, $quantidade_resultados";
+              $result_noticia = "SELECT * FROM paginas LIMIT $inicio, $quantidade_resultados";
               $resultado_noticias = mysqli_query($conexao, $result_noticia);
 
-              while($row_noticia = mysqli_fetch_assoc($resultado_noticias)):
+              while($row_pagina = mysqli_fetch_assoc($resultado_noticias)):
             ?>
             <tr>
-              <th scope="row"><?php echo $row_noticia['id']?></th>
-              <td><?php echo $row_noticia['titulo']?></td>
+              <th scope="row"><?php echo $row_pagina['id']?></th>
+              <td><?php echo $row_pagina['titulo']?></td>
               <td>
                 <div class="row">
-                  <a href="<?php echo "../noticia?id=" . $row_noticia['id'] ?>"class="btn btn-primary mr-2">Vizualizar</a>
-                  <a href="<?php echo "editor?noticia=" . $row_noticia['id'] ?>" class="btn btn-warning mr-2">Editar</a>
-                  <a href="<?php echo "apagar_noticia?id=" . $row_noticia['id'] ?>" class="btn btn-danger">Apagar</a>
+                  <a href="<?php echo "../pagina?nome=" . $row_pagina['nome'] ?>"class="btn btn-primary mr-2">Vizualizar</a>
+                  <a href="<?php echo "editor-paginas?id=" . $row_pagina['id'] ?>" class="btn btn-warning mr-2">Editar</a>
+                  <a href="<?php echo "apagar_pagina?id=" . $row_pagina['id'] ?>" class="btn btn-danger">Apagar</a>
                 </div>
               </td>
             </tr>
@@ -284,8 +284,11 @@
           </tbody>
         </table>
 
+        <div class="row mt-4 d-flex justify-content-center">
+          <nav aria-label="Navegação de página exemplo">
+            <ul class="pagination">
         <?php 
-          $result_pg = "SELECT COUNT(id) AS num_result FROM noticia";
+          $result_pg = "SELECT COUNT(id) AS num_result FROM paginas";
           $resultado_pg = mysqli_query($conexao, $result_pg);
           $row_pg = mysqli_fetch_assoc($resultado_pg);
           
@@ -297,29 +300,32 @@
           for($pag_ant = $pagina - $maximo_links; $pag_ant <= $pagina - 1; $pag_ant++):   
             if ($pag_ant >= 1) :
         ?>
-            <a class='mr-2 btn btn-primary' href='<?php echo "dashboard.php?pagina=$pag_ant" ?>'><?php echo "$pag_ant" ?></a>
+            <li class="page-item"><a class='page-link' href='<?php echo "gerir-paginas?pagina=$pag_ant" ?>'><?php echo "$pag_ant" ?></a></li>
         <?php 
             endif;
           endfor;
 
           if ($pagina_atual >= 1):  
         ?>
-            <div class='mr-2 btn btn-primary active' style="cursor: default"><?php echo "$pagina_atual" ?></div>
+            <li class="page-item active"><a class='page-link' style="cursor: default"><?php echo "$pagina_atual" ?></a></li>
         <?php 
           endif;
 
           for($pag_dep = $pagina + 1; $pag_dep <= $pagina + $maximo_links; $pag_dep++):
             if ($pag_dep <= $quantidade_paginas) :
         ?>
-            <a class='btn btn-primary' href='<?php echo "dashboard.php?pagina=$pag_dep" ?>'><?php echo "$pag_dep" ?></a>
+            <li class="page-item"><a class='page-link' href='<?php echo "gerir-paginas?pagina=$pag_dep" ?>'><?php echo "$pag_dep" ?></a></li>
         <?php 
             endif;
           endfor;
         ?>
+            </ul>
+          </nav>
+        </div>
 
         </br>
-        <a href="editor.php" class="mt-4 btn btn-success">Criar</a>
-        </div>
+        <a href="editor-paginas.php" class="mt-4 btn btn-success">Criar</a>
+        </div> 
       <!-- End of Main Content -->
 
       <!-- Footer -->
@@ -371,6 +377,17 @@
 
   <!-- Custom scripts for all pages-->
   <script src="../js/sb-admin-2.min.js"></script>
+
+  <!-- Page level plugins -->
+  <script src="../vendor/chart.js/Chart.min.js"></script>
+
+  <!-- Page level custom scripts -->
+  <script src="../js/demo/chart-area-demo.js"></script>
+  <script src="../js/demo/chart-pie-demo.js"></script>
+
+  <script src="../js/ckeditor/ckeditor.js"></script>
+  <script src="../js/ckfinder/ckfinder.js"></script>
+  <script src="../js/javascript.js"></script>
 </body>
 
 </html>

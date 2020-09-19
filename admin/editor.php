@@ -11,10 +11,21 @@
   $resultado = mysqli_query($conexao, $query);
 
   $nome = mysqli_fetch_assoc($resultado);
+
+  $titulo = empty($_GET['noticia']) ? "Inserir" : "Editar";
+  $id = filter_input(INPUT_GET, 'noticia', FILTER_SANITIZE_NUMBER_INT);
+    
+  if ($id != 0) {
+    $query = "SELECT * FROM noticia WHERE id = $id";
+    $result = mysqli_query($conexao, $query);
+    $noticia = mysqli_fetch_assoc($result);
+
+    
+  }
 ?>
 
 <!DOCTYPE html>
-<html lang="pt_BR">
+<html lang="en">
 
 <head>
 
@@ -31,7 +42,24 @@
   <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
 
   <!-- Custom styles for this template-->
-  <link href="../css/sb-admin-2.css" rel="stylesheet">
+  <link href="../css/sb-admin-2.min.css" rel="stylesheet">
+  <script>
+    function doEnviar() { //inicio da funcao
+    
+        //pega o formulário como elemento
+        var formulario = document.getElementById('editor');
+        
+        //monta os parametros de get
+        var parsGet = '?id=<?php echo $id;?>';
+        // parsGet = parsGet + '&titulo=' + document.getElementById('titulo').value + '&autor=' + document.getElementById('autor').value + '&texto=' + document.getElementById('texto').value;
+        
+        //muda o parâmetro action do formulário com os parmetros get
+        formulario.action = "cadastro_noticia.php"+ parsGet;
+        
+        //envia o formulário
+        formulario.submit();
+    }
+  </script> 
 </head>
 
 <body id="page-top">
@@ -54,7 +82,7 @@
       <hr class="sidebar-divider my-0">
 
       <!-- Nav Item - Dashboard -->
-      <li class="nav-item active">
+      <li class="nav-item">
         <a class="nav-link" href="dashboard.php">
           <i class="fas fa-newspaper"></i>
           <span>Gerir Notícias</span></a>
@@ -187,138 +215,164 @@
 
         <!-- Begin Page Content -->
         <div class="container-fluid">
-        <div class="mt-4 mb-4">
-          <h3 class="text-gray-900" style="text-align: center;">Notícias</h3>
-        </div>
-        <?php 
-          if(isset($_SESSION['sucesso'])):
-        ?>
-          <div class="alert alert-success alert-dismissible fade show" role="alert">
-            <strong>Notícia apagada com sucesso!</strong>
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-        <?php 
-          endif;
-          unset($_SESSION['sucesso']);
-        ?>
-        <?php 
-          if(isset($_SESSION['falha'])):
-        ?>
-          <div class="alert alert-success alert-dismissible fade show" role="alert">
-            <strong>Notícia apagada com sucesso!</strong>
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-        <?php 
-          endif;
-          unset($_SESSION['falha']);
-        ?>
-        <?php 
-          if(isset($_SESSION['erro'])):
-        ?>
-          <div class="alert alert-warning alert-dismissible fade show" role="alert">
-            <strong>Selecione a notícia que deseja apagar.</strong>
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-        <?php 
-          endif;
-          unset($_SESSION['erro']);
-        ?>
-        <?php 
-          if(isset($_SESSION['noticia_invalida'])):
-        ?>
-          <div class="alert alert-warning alert-dismissible fade show" role="alert">
-            <strong>Selecione uma notícia para ediar!</strong>
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-        <?php 
-          endif;
-          unset($_SESSION['noticia_invalida']);
-        ?>
-        <table class="table">
-          <thead class="thead-light">
-            <tr>
-              <th scope="col">ID</th>
-              <th scope="col" style="text-align: center;">Notícia</th>
-              <th scope="col">Ação</th>
-            </tr>
-          </thead>
-          <tbody>
+          <?php 
+            if(isset($_SESSION['campos'])):
+          ?>
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+              <strong>Preencha os campos antes de enviar!</strong>
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+          <?php 
+            endif;
+            unset($_SESSION['campos']);
+          ?>
+          <?php 
+            if(isset($_SESSION['erro'])):
+          ?>
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+              <strong>Erro não for possível concluír a operação!</strong>
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+          <?php 
+            endif;
+            unset($_SESSION['erro']);
+          ?>
+          <?php 
+            if(isset($_SESSION['sucesso_update'])):
+          ?>
+            <div class="alert alert-info alert-dismissible fade show" role="alert">
+              <strong>Notícia Atualizada com sucesso!</strong>
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+          <?php 
+            endif;
+            unset($_SESSION['sucesso_update']);
+          ?>
+          <?php 
+            if(isset($_SESSION['sucesso_insert'])):
+          ?>
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+              <strong>Notícia cadastrada com sucesso!</strong>
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+          <?php 
+            endif;
+            unset($_SESSION['sucesso_insert']);
+          ?>
+          <?php 
+            if(isset($_SESSION['img_apagada'])):
+          ?>
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+              <strong>Imagem apagada com sucesso!</strong>
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+          <?php 
+            endif;
+            unset($_SESSION['img_apagada']);
+          ?>
+          <form method="POST" id="editor" enctype="multipart/form-data" action="cadastro_noticia.php">
+            <h3 class="text-gray-900" style="text-align: center;"><?php echo $titulo ?></h3>
+            <div class="form-group">
+              <label for="">Título</label>
+              <input type="text" name="titulo" value="<?php if (isset($noticia['titulo'])) echo $noticia['titulo']?>"
+                class="form-control" id="" aria-describedby="helpId" placeholder="">
+            </div>
+            <div class="form-group">
+              <label for="">Autor</label>
+              <input type="text" name="autor" value="<?php if (isset($noticia['autor'])) echo $noticia['autor']?>"
+                class="form-control" id="" aria-describedby="helpId" placeholder="">
+            </div>
+            <!-- <label for="" class="mt-2">Imagem</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <span class="input-group-text" id="inputGroupFileAddon01">Enviar</span>
+              </div>
+              <div class="custom-file">
+                <input type="file" class="custom-file-input" name="imagem" id="inputGroupFile01"
+                  aria-describedby="inputGroupFileAddon01">
+                <label class="custom-file-label" for="inputGroupFile01"></label>
+              </div>
+            </div> -->
             <?php 
-              // Receber o número da página
-              $pagina_atual = filter_input(INPUT_GET, 'pagina', FILTER_SANITIZE_NUMBER_INT) == 0 ? 1 : filter_input(INPUT_GET, 'pagina', FILTER_SANITIZE_NUMBER_INT);
-              $pagina = (!empty($pagina_atual)) ? $pagina_atual : 1;
-
-              //setar itens por página
-              $quantidade_resultados = 15;
-
-              //Calcular início da vizualização
-              $inicio = ($quantidade_resultados * $pagina) - $quantidade_resultados;
-
-              $result_noticia = "SELECT * FROM noticia LIMIT $inicio, $quantidade_resultados";
-              $resultado_noticias = mysqli_query($conexao, $result_noticia);
-
-              while($row_noticia = mysqli_fetch_assoc($resultado_noticias)):
+            if (isset($noticia['imagem'])):
+              if ($noticia['imagem'] != ''):
+                $imagem = "../files/images/" . $noticia['imagem'];
             ?>
-            <tr>
-              <th scope="row"><?php echo $row_noticia['id']?></th>
-              <td><?php echo $row_noticia['titulo']?></td>
-              <td>
-                <div class="row">
-                  <a href="<?php echo "../noticia?id=" . $row_noticia['id'] ?>"class="btn btn-primary mr-2">Vizualizar</a>
-                  <a href="<?php echo "editor?noticia=" . $row_noticia['id'] ?>" class="btn btn-warning mr-2">Editar</a>
-                  <a href="<?php echo "apagar_noticia?id=" . $row_noticia['id'] ?>" class="btn btn-danger">Apagar</a>
+              <!-- Show Image -->
+              <label for="">Imagem</label>
+              <div class="row">
+                <button type="button" class="ml-2 btn btn-danger" data-toggle="modal" data-target="#exampleModalLong">
+                  Apagar Imagem
+                </button>
+
+                <!-- Modal -->
+                <div class="modal fade" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+                  <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLongTitle">Deseja apagar a imagem?</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                          <span aria-hidden="true">&times;</span>
+                        </button>
+                      </div>
+                      <div class="modal-body">
+                        Não é possível reverter essa operação
+                      </div>
+                      <div class="modal-footer">
+                        <a href="<?php echo "cadastro_noticia.php?imagem=" . $noticia['imagem'] . "&id=" . $noticia['id']?>" class="ml-3 btn btn-danger">Sim</a>
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">Não</button>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-              </td>
-            </tr>
-            <?php
-              endwhile;
+              </div>
+              <img class="mt-2 img img-fluid" src="<?php echo "../files/images/". $noticia['imagem']?>" alt=""><br/>
+            <?php 
+              else:
             ?>
-          </tbody>
-        </table>
+              <label for="">Imagem</label>
+              <div class="custom-file">
+                <input type="file" name="imagem" class="custom-file-input" id="validatedCustomFile" required>
+                <label class="custom-file-label" for="validatedCustomFile">Selecione uma imagem</label>
+                <div class="invalid-feedback">Example invalid custom file feedback</div>
+              </div>
+            <?php
+              endif;
+            else:
+            ?>
+              <label for="" >Imagem</label>
+              <div class="custom-file">
+                <input type="file" name="imagem" class="custom-file-input" id="validatedCustomFile" required>
+                <label class="custom-file-label" for="validatedCustomFile">Selecione uma imagem</label>
+                <div class="invalid-feedback">Example invalid custom file feedback</div>
+              </div>
+            <?php 
+              endif;
+            ?>
+            <label for="texto" class="mt-4">Conteúdo</label></br>
+            <textarea name="texto" id="texto">
+              <?php if(isset($noticia['corpo_noticia'])) echo $noticia['corpo_noticia'];?>
+            </textarea><br/>
 
-        <?php 
-          $result_pg = "SELECT COUNT(id) AS num_result FROM noticia";
-          $resultado_pg = mysqli_query($conexao, $result_pg);
-          $row_pg = mysqli_fetch_assoc($resultado_pg);
-          
-          // Quantidade de páginas
-          $quantidade_paginas = ceil($row_pg['num_result'] / $quantidade_resultados);
-
-          // Limitar os links antes e depois
-          $maximo_links = 2;
-          for($pag_ant = $pagina - $maximo_links; $pag_ant <= $pagina - 1; $pag_ant++):   
-            if ($pag_ant >= 1) :
-        ?>
-            <a class='mr-2 btn btn-primary' href='<?php echo "dashboard.php?pagina=$pag_ant" ?>'><?php echo "$pag_ant" ?></a>
-        <?php 
-            endif;
-          endfor;
-
-          if ($pagina_atual >= 1):  
-        ?>
-            <div class='mr-2 btn btn-primary active' style="cursor: default"><?php echo "$pagina_atual" ?></div>
-        <?php 
-          endif;
-
-          for($pag_dep = $pagina + 1; $pag_dep <= $pagina + $maximo_links; $pag_dep++):
-            if ($pag_dep <= $quantidade_paginas) :
-        ?>
-            <a class='btn btn-primary' href='<?php echo "dashboard.php?pagina=$pag_dep" ?>'><?php echo "$pag_dep" ?></a>
-        <?php 
-            endif;
-          endfor;
-        ?>
-
-        </br>
-        <a href="editor.php" class="mt-4 btn btn-success">Criar</a>
+            <?php
+                if ($id == 0){
+                  echo '<button type="submit" class="btn btn-success mt-4">Cadastrar</button>';
+                }
+                else{
+                  echo "<button type='submit' onClick='doEnviar()' class='btn btn-primary mt-4'>Atualizar</button>";
+                }
+              ?>
+          </form>
         </div>
       <!-- End of Main Content -->
 
@@ -371,6 +425,17 @@
 
   <!-- Custom scripts for all pages-->
   <script src="../js/sb-admin-2.min.js"></script>
+
+  <!--script src="../js/ckeditor/ckeditor.js"></script-->
+  <!--script src="../js/ckfinder/ckfinder.js"></script-->
+  <script src="https://cdn.tiny.cloud/1/3k5ggk1wq314sjxtshxanxii7pm9kky1h8taepkvhvnhjvuy/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
+  <script src="../js/tinymce-init.js"></script>
+  <script>
+        $('input[type="file"]').change(function(e){
+        var fileName = e.target.files[0].name;
+        $('.custom-file-label').html(fileName);
+    });
+  </script>
 </body>
 
 </html>

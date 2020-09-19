@@ -104,7 +104,6 @@
       </li>
       <!-- End Menu -->
 
-
       <!-- Divider -->
       <hr class="sidebar-divider d-none d-md-block">
 
@@ -272,9 +271,11 @@
               <td><?php echo $row_noticia['titulo']?></td>
               <td>
                 <div class="row">
-                  <a href="<?php echo "../noticia?id=" . $row_noticia['id'] ?>"class="btn btn-primary mr-2">Vizualizar</a>
+                  <a href="<?php echo "../noticia?titulo=" . $nome = strtolower( preg_replace('/[ -]+/', "-", 
+                    strtr(utf8_decode(trim($row_noticia['titulo'])), utf8_decode("áàãâéêíóôõúüñçÁÀÃÂÉÊÍÓÔÕÚÜÑÇ:'"),
+                    "aaaaeeiooouuncAAAAEEIOOOUUNC--")) ) . '&id='. $row_noticia['id'] ?>"class="btn btn-primary mr-2">Vizualizar</a>
                   <a href="<?php echo "editor?noticia=" . $row_noticia['id'] ?>" class="btn btn-warning mr-2">Editar</a>
-                  <a href="<?php echo "apagar_noticia?id=" . $row_noticia['id'] ?>" class="btn btn-danger">Apagar</a>
+                  <a href="<?php echo "apagar_noticia?id=" . $row_noticia['id'] . '&imagem=' . $row_noticia['imagem'] ?>" class="btn btn-danger">Apagar</a>
                 </div>
               </td>
             </tr>
@@ -283,7 +284,11 @@
             ?>
           </tbody>
         </table>
-
+        
+        <!-- Início Paginação -->
+        <div class="row mt-4 d-flex justify-content-center">
+          <nav aria-label="Navegação de página exemplo">
+            <ul class="pagination">
         <?php 
           $result_pg = "SELECT COUNT(id) AS num_result FROM noticia";
           $resultado_pg = mysqli_query($conexao, $result_pg);
@@ -297,25 +302,29 @@
           for($pag_ant = $pagina - $maximo_links; $pag_ant <= $pagina - 1; $pag_ant++):   
             if ($pag_ant >= 1) :
         ?>
-            <a class='mr-2 btn btn-primary' href='<?php echo "dashboard.php?pagina=$pag_ant" ?>'><?php echo "$pag_ant" ?></a>
+            <li class="page-item"><a class='page-link' href='<?php echo "dashboard?pagina=$pag_ant" ?>'><?php echo "$pag_ant" ?></a></li>
         <?php 
             endif;
           endfor;
 
           if ($pagina_atual >= 1):  
         ?>
-            <div class='mr-2 btn btn-primary active' style="cursor: default"><?php echo "$pagina_atual" ?></div>
+            <li class="page-item active"><a class='page-link' style="cursor: default"><?php echo "$pagina_atual" ?></a></li>
         <?php 
           endif;
 
           for($pag_dep = $pagina + 1; $pag_dep <= $pagina + $maximo_links; $pag_dep++):
             if ($pag_dep <= $quantidade_paginas) :
         ?>
-            <a class='btn btn-primary' href='<?php echo "dashboard.php?pagina=$pag_dep" ?>'><?php echo "$pag_dep" ?></a>
+            <li class="page-item"><a class='page-link' href='<?php echo "dashboard?pagina=$pag_dep" ?>'><?php echo "$pag_dep" ?></a></li>
         <?php 
             endif;
           endfor;
         ?>
+            </ul>
+          </nav>
+        </div>
+        <!-- Fim Paginação -->
 
         </br>
         <a href="editor.php" class="mt-4 btn btn-success">Criar</a>
@@ -343,8 +352,8 @@
     <i class="fas fa-angle-up"></i>
   </a>
 
-    <!-- Logout Modal-->
-    <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <!-- Logout Modal-->
+  <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">

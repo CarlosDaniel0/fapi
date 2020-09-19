@@ -11,10 +11,19 @@
   $resultado = mysqli_query($conexao, $query);
 
   $nome = mysqli_fetch_assoc($resultado);
+
+  $titulo = empty($_GET['id']) ? "Inserir" : "Editar";
+  $id = filter_input(INPUT_GET, 'id', FILTER_SANITIZE_NUMBER_INT);
+    
+  if ($id != 0) {
+    $query = "SELECT * FROM paginas WHERE id = $id";
+    $result = mysqli_query($conexao, $query);
+    $pagina = mysqli_fetch_assoc($result);
+  }
 ?>
 
 <!DOCTYPE html>
-<html lang="pt_BR">
+<html lang="en">
 
 <head>
 
@@ -31,7 +40,24 @@
   <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
 
   <!-- Custom styles for this template-->
-  <link href="../css/sb-admin-2.css" rel="stylesheet">
+  <link href="../css/sb-admin-2.min.css" rel="stylesheet">
+  <script>
+    function doEnviar() { //inicio da funcao
+    
+        //pega o formulário como elemento
+        var formulario = document.getElementById('editor');
+        
+        //monta os parametros de get
+        var parsGet = '?id=<?php echo $id;?>';
+        // parsGet = parsGet + '&titulo=' + document.getElementById('titulo').value + '&autor=' + document.getElementById('autor').value + '&texto=' + document.getElementById('texto').value;
+        
+        //muda o parâmetro action do formulário com os parmetros get
+        formulario.action = "cadastro_pagina.php"+ parsGet;
+        
+        //envia o formulário
+        formulario.submit();
+    }
+  </script> 
 </head>
 
 <body id="page-top">
@@ -40,7 +66,7 @@
   <div id="wrapper">
 
     <!-- Sidebar -->
-    <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion toggled" id="accordionSidebar">
+    <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark  toggled" id="accordionSidebar">
 
       <!-- Sidebar - Brand -->
       <a class="sidebar-brand d-flex align-items-center justify-content-center" href="dashboard">
@@ -54,7 +80,7 @@
       <hr class="sidebar-divider my-0">
 
       <!-- Nav Item - Dashboard -->
-      <li class="nav-item active">
+      <li class="nav-item">
         <a class="nav-link" href="dashboard.php">
           <i class="fas fa-newspaper"></i>
           <span>Gerir Notícias</span></a>
@@ -187,138 +213,79 @@
 
         <!-- Begin Page Content -->
         <div class="container-fluid">
-        <div class="mt-4 mb-4">
-          <h3 class="text-gray-900" style="text-align: center;">Notícias</h3>
-        </div>
-        <?php 
-          if(isset($_SESSION['sucesso'])):
-        ?>
-          <div class="alert alert-success alert-dismissible fade show" role="alert">
-            <strong>Notícia apagada com sucesso!</strong>
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-        <?php 
-          endif;
-          unset($_SESSION['sucesso']);
-        ?>
-        <?php 
-          if(isset($_SESSION['falha'])):
-        ?>
-          <div class="alert alert-success alert-dismissible fade show" role="alert">
-            <strong>Notícia apagada com sucesso!</strong>
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-        <?php 
-          endif;
-          unset($_SESSION['falha']);
-        ?>
-        <?php 
-          if(isset($_SESSION['erro'])):
-        ?>
-          <div class="alert alert-warning alert-dismissible fade show" role="alert">
-            <strong>Selecione a notícia que deseja apagar.</strong>
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-        <?php 
-          endif;
-          unset($_SESSION['erro']);
-        ?>
-        <?php 
-          if(isset($_SESSION['noticia_invalida'])):
-        ?>
-          <div class="alert alert-warning alert-dismissible fade show" role="alert">
-            <strong>Selecione uma notícia para ediar!</strong>
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-        <?php 
-          endif;
-          unset($_SESSION['noticia_invalida']);
-        ?>
-        <table class="table">
-          <thead class="thead-light">
-            <tr>
-              <th scope="col">ID</th>
-              <th scope="col" style="text-align: center;">Notícia</th>
-              <th scope="col">Ação</th>
-            </tr>
-          </thead>
-          <tbody>
-            <?php 
-              // Receber o número da página
-              $pagina_atual = filter_input(INPUT_GET, 'pagina', FILTER_SANITIZE_NUMBER_INT) == 0 ? 1 : filter_input(INPUT_GET, 'pagina', FILTER_SANITIZE_NUMBER_INT);
-              $pagina = (!empty($pagina_atual)) ? $pagina_atual : 1;
+          <?php 
+            if(isset($_SESSION['campos'])):
+          ?>
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+              <strong>Preencha os campos antes de enviar!</strong>
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+          <?php 
+            endif;
+            unset($_SESSION['campos']);
+          ?>
+          <?php 
+            if(isset($_SESSION['erro'])):
+          ?>
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+              <strong>Erro não for possível concluír a operação!</strong>
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+          <?php 
+            endif;
+            unset($_SESSION['erro']);
+          ?>
+          <?php 
+            if(isset($_SESSION['sucesso_update'])):
+          ?>
+            <div class="alert alert-info alert-dismissible fade show" role="alert">
+              <strong>Página Atualizada com sucesso!</strong>
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+          <?php 
+            endif;
+            unset($_SESSION['sucesso_update']);
+          ?>
+          <?php 
+            if(isset($_SESSION['sucesso_insert'])):
+          ?>
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+              <strong>Página cadastrada com sucesso!</strong>
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+          <?php 
+            endif;
+            unset($_SESSION['sucesso_insert']);
+          ?>
+          <form method="POST" id="editor" action="cadastro_pagina.php">
+            <h3 class="text-gray-900" style="text-align: center;"><?php echo $titulo ?></h3>
+            <div class="form-group">
+              <label for="">Título</label>
+              <input type="text" name="titulo" value="<?php if (isset($pagina['titulo'])) echo $pagina['titulo']?>"
+                class="form-control" id="" aria-describedby="helpId" placeholder="">
+            </div>
+            <label for="texto" class="mt-4">Conteúdo</label></br>
+            <textarea name="pagina" id="texto">
+              <?php if(isset($pagina['pagina'])) echo $pagina['pagina'];?>
+            </textarea><br/>
 
-              //setar itens por página
-              $quantidade_resultados = 15;
-
-              //Calcular início da vizualização
-              $inicio = ($quantidade_resultados * $pagina) - $quantidade_resultados;
-
-              $result_noticia = "SELECT * FROM noticia LIMIT $inicio, $quantidade_resultados";
-              $resultado_noticias = mysqli_query($conexao, $result_noticia);
-
-              while($row_noticia = mysqli_fetch_assoc($resultado_noticias)):
-            ?>
-            <tr>
-              <th scope="row"><?php echo $row_noticia['id']?></th>
-              <td><?php echo $row_noticia['titulo']?></td>
-              <td>
-                <div class="row">
-                  <a href="<?php echo "../noticia?id=" . $row_noticia['id'] ?>"class="btn btn-primary mr-2">Vizualizar</a>
-                  <a href="<?php echo "editor?noticia=" . $row_noticia['id'] ?>" class="btn btn-warning mr-2">Editar</a>
-                  <a href="<?php echo "apagar_noticia?id=" . $row_noticia['id'] ?>" class="btn btn-danger">Apagar</a>
-                </div>
-              </td>
-            </tr>
             <?php
-              endwhile;
-            ?>
-          </tbody>
-        </table>
-
-        <?php 
-          $result_pg = "SELECT COUNT(id) AS num_result FROM noticia";
-          $resultado_pg = mysqli_query($conexao, $result_pg);
-          $row_pg = mysqli_fetch_assoc($resultado_pg);
-          
-          // Quantidade de páginas
-          $quantidade_paginas = ceil($row_pg['num_result'] / $quantidade_resultados);
-
-          // Limitar os links antes e depois
-          $maximo_links = 2;
-          for($pag_ant = $pagina - $maximo_links; $pag_ant <= $pagina - 1; $pag_ant++):   
-            if ($pag_ant >= 1) :
-        ?>
-            <a class='mr-2 btn btn-primary' href='<?php echo "dashboard.php?pagina=$pag_ant" ?>'><?php echo "$pag_ant" ?></a>
-        <?php 
-            endif;
-          endfor;
-
-          if ($pagina_atual >= 1):  
-        ?>
-            <div class='mr-2 btn btn-primary active' style="cursor: default"><?php echo "$pagina_atual" ?></div>
-        <?php 
-          endif;
-
-          for($pag_dep = $pagina + 1; $pag_dep <= $pagina + $maximo_links; $pag_dep++):
-            if ($pag_dep <= $quantidade_paginas) :
-        ?>
-            <a class='btn btn-primary' href='<?php echo "dashboard.php?pagina=$pag_dep" ?>'><?php echo "$pag_dep" ?></a>
-        <?php 
-            endif;
-          endfor;
-        ?>
-
-        </br>
-        <a href="editor.php" class="mt-4 btn btn-success">Criar</a>
+                if ($id == 0){
+                  echo '<button type="submit" class="btn btn-success mt-4">Cadastrar</button>';
+                }
+                else{
+                  echo "<button type='submit' onClick='doEnviar()' class='btn btn-primary mt-4'>Atualizar</button>";
+                }
+              ?>
+          </form>
         </div>
       <!-- End of Main Content -->
 
@@ -371,6 +338,17 @@
 
   <!-- Custom scripts for all pages-->
   <script src="../js/sb-admin-2.min.js"></script>
+
+  <!--script src="../js/ckeditor/ckeditor.js"></script-->
+  <!--script src="../js/ckfinder/ckfinder.js"></script-->
+  <script src="https://cdn.tiny.cloud/1/3k5ggk1wq314sjxtshxanxii7pm9kky1h8taepkvhvnhjvuy/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
+  <script src="../js/tinymce-init.js"></script>
+  <script>
+        $('input[type="file"]').change(function(e){
+        var fileName = e.target.files[0].name;
+        $('.custom-file-label').html(fileName);
+    });
+  </script>
 </body>
 
 </html>
