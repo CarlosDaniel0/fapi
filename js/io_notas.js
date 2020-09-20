@@ -5,7 +5,7 @@ $(function() {
         
         $.ajax({
             method: 'POST',
-            url: 'script_notas.php',
+            url: '../vendor/admin/script_notas.php',
             data: dados,
             success: function(data) {
                 console.log(data);

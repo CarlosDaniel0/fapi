@@ -1,8 +1,8 @@
 <?php
     session_start();
     // Verifica se o usuário está logado
-    include('verifica_login.php');
-    include('conexao.php');
+    include('../vendor/admin/verifica_login.php');
+    include('../vendor/admin/conexao.php');
     include('../var/variaveis.php');
   
     //Identifica o usuário logado de acordo com a base de dados.
@@ -295,7 +295,7 @@
                 <div class="row">
                   <a href="<?php echo "../notas-oficiais" ?>"class="btn btn-primary mr-2">Vizualizar</a>
                   <a href="<?php echo "editor-notas?id=" . $row_nota['id_nota'] ?>" class="btn btn-warning mr-2">Editar</a>
-                  <a href="<?php echo "apagar_nota?id=" . $row_nota['id_nota'] ?>" class="btn btn-danger">Apagar</a>
+                  <a href="<?php echo "../vendor/admin/apagar_nota?id=" . $row_nota['id_nota'] ?>" class="btn btn-danger">Apagar</a>
                 </div>
               </td>
             </tr>
@@ -369,7 +369,7 @@
                 </button>
               </div>
               <div class="modal-body">
-                <form action="tabelas/cadastro_tabela" id="cadastro_tabela" method="post">
+                <form action="../vendor/admin/cadastro_tabela" id="cadastro_tabela" method="post">
                   <div class="col-md-8" style="margin: auto;">
                     <div class="col">
                       Nota
@@ -426,7 +426,7 @@
         <div class="modal-body">Selecione "Sair" abaixo se você está preparado para finalizar essa sessão.</div>
         <div class="modal-footer">
           <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-          <a class="btn btn-primary" href="logout.php">Sair</a>
+          <a class="btn btn-primary" href="../vendor/admin/logout.php">Sair</a>
         </div>
       </div>
     </div>

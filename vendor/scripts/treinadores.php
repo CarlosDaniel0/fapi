@@ -1,5 +1,5 @@
 <?php 
-    include('../../admin/conexao.php');
+    include('../../vendor/admin/conexao.php');
     function data($data) {
         return date("d/m/Y", strtotime($data));
     }

@@ -19,7 +19,7 @@ $(function() {
                 $(this).parent().removeClass("celulaEmEdicao");
 
                 var request = $.ajax({
-                    url: "tabelas/update_tabela.php",
+                    url: "../vendor/admin/update_tabela.php",
                     type: 'POST',
                     data: "coluna=" + nomeColuna + "&conteudo=" + novoConteudo + "&tabela=" + tabela + "&id=" + id + "&coluna_id=" + coluna_id,
                     datatype: 'html'

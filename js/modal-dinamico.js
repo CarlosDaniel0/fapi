@@ -57,7 +57,7 @@ $(function() {
             // Requisição AJAX
             console.log(dados + '&tabela=' + tabela)
             $.ajax({
-                url: "tabelas/cadastro_tabela.php",
+                url: "../vendor/admin/cadastro_tabela.php",
                 type: 'POST',
                 data: dados+ '&tabela=' + tabela,
                 datatype: 'html',

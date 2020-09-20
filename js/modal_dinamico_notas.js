@@ -41,7 +41,7 @@ $(function() {
         
                 console.log(dados);
                 $.ajax({
-                    url: "tabelas/cadastro_com_relacionamento.php",
+                    url: "../vendor/admin/cadastro_com_relacionamento.php",
                     type: 'POST',
                     data: dados,
                     datatype: 'html',

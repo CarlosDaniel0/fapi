@@ -1,6 +1,6 @@
 <?php
     session_start();
-    include('../../admin/conexao.php');
+    include('../../vendor/admin/conexao.php');
 
     // Consulta de distancia com o id passado pelo usuário
     $query = "SELECT distancia.nome FROM evento_distancia

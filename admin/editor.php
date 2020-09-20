@@ -1,8 +1,8 @@
 <?php
   session_start();
   // Verifica se o usuário está logado
-  include('verifica_login.php');
-  include('conexao.php');
+  include('../vendor/admin/verifica_login.php');
+  include('../vendor/admin/conexao.php');
   include('../var/variaveis.php');
 
   //Identifica o usuário logado de acordo com a base de dados.
@@ -54,7 +54,7 @@
         // parsGet = parsGet + '&titulo=' + document.getElementById('titulo').value + '&autor=' + document.getElementById('autor').value + '&texto=' + document.getElementById('texto').value;
         
         //muda o parâmetro action do formulário com os parmetros get
-        formulario.action = "cadastro_noticia.php"+ parsGet;
+        formulario.action = "../vendor/admin/cadastro_noticia.php"+ parsGet;
         
         //envia o formulário
         formulario.submit();
@@ -280,7 +280,7 @@
             endif;
             unset($_SESSION['img_apagada']);
           ?>
-          <form method="POST" id="editor" enctype="multipart/form-data" action="cadastro_noticia.php">
+          <form method="POST" id="editor" enctype="multipart/form-data" action="../vendor/admin/cadastro_noticia.php">
             <h3 class="text-gray-900" style="text-align: center;"><?php echo $titulo ?></h3>
             <div class="form-group">
               <label for="">Título</label>
@@ -329,7 +329,7 @@
                         Não é possível reverter essa operação
                       </div>
                       <div class="modal-footer">
-                        <a href="<?php echo "cadastro_noticia.php?imagem=" . $noticia['imagem'] . "&id=" . $noticia['id']?>" class="ml-3 btn btn-danger">Sim</a>
+                        <a href="<?php echo "../vendor/admin/cadastro_noticia.php?imagem=" . $noticia['imagem'] . "&id=" . $noticia['id']?>" class="ml-3 btn btn-danger">Sim</a>
                         <button type="button" class="btn btn-primary" data-dismiss="modal">Não</button>
                       </div>
                     </div>
@@ -410,7 +410,7 @@
         <div class="modal-body">Selecione "Sair" abaixo se você está preparado para finalizar essa sessão.</div>
         <div class="modal-footer">
           <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-          <a class="btn btn-primary" href="logout.php">Sair</a>
+          <a class="btn btn-primary" href="../vendor/admin/logout.php">Sair</a>
         </div>
       </div>
     </div>

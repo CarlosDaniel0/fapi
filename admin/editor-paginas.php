@@ -1,8 +1,8 @@
 <?php
   session_start();
   // Verifica se o usuário está logado
-  include('verifica_login.php');
-  include('conexao.php');
+  include('../vendor/admin/verifica_login.php');
+  include('../vendor/admin/conexao.php');
   include('../var/variaveis.php');
 
   //Identifica o usuário logado de acordo com a base de dados.
@@ -33,7 +33,7 @@
   <meta name="description" content="">
   <meta name="author" content="">
 
-  <title>Administrativo FAPI - Dashboard</title>
+  <title>Administrativo FAPI - Editor de Páginas</title>
 
   <!-- Custom fonts for this template-->
   <link href="../vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
@@ -52,7 +52,7 @@
         // parsGet = parsGet + '&titulo=' + document.getElementById('titulo').value + '&autor=' + document.getElementById('autor').value + '&texto=' + document.getElementById('texto').value;
         
         //muda o parâmetro action do formulário com os parmetros get
-        formulario.action = "cadastro_pagina.php"+ parsGet;
+        formulario.action = "../vendor/admin/cadastro_pagina.php"+ parsGet;
         
         //envia o formulário
         formulario.submit();
@@ -265,7 +265,7 @@
             endif;
             unset($_SESSION['sucesso_insert']);
           ?>
-          <form method="POST" id="editor" action="cadastro_pagina.php">
+          <form method="POST" id="editor" action="../vendor/admin/cadastro_pagina.php">
             <h3 class="text-gray-900" style="text-align: center;"><?php echo $titulo ?></h3>
             <div class="form-group">
               <label for="">Título</label>
@@ -323,7 +323,7 @@
         <div class="modal-body">Selecione "Sair" abaixo se você está preparado para finalizar essa sessão.</div>
         <div class="modal-footer">
           <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-          <a class="btn btn-primary" href="logout.php">Sair</a>
+          <a class="btn btn-primary" href="../vendor/admin/logout.php">Sair</a>
         </div>
       </div>
     </div>

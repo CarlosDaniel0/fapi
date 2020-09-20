@@ -1,8 +1,8 @@
 <?php
   session_start();
   // Verifica se o usuário está logado
-  include('verifica_login.php');
-  include('conexao.php');
+  include('../vendor/admin/verifica_login.php');
+  include('../vendor/admin/conexao.php');
   include('../var/variaveis.php');
 
   //Identifica o usuário logado de acordo com a base de dados.
@@ -52,7 +52,7 @@
         // parsGet = parsGet + '&titulo=' + document.getElementById('titulo').value + '&autor=' + document.getElementById('autor').value + '&texto=' + document.getElementById('texto').value;
         
         //muda o parâmetro action do formulário com os parmetros get
-        formulario.action = "tabelas/script_competicoes.php"+ parsGet;
+        formulario.action = "../vendor/admin/script_competicoes.php"+ parsGet;
         
         //envia o formulário
         formulario.submit();
@@ -278,7 +278,7 @@
             endif;
             unset($_SESSION['delete_doc']);
           ?>
-          <form method="POST" id="editor" action="tabelas/script_competicoes.php" enctype="multipart/form-data">
+          <form method="POST" id="editor" action="../vendor/admin/script_competicoes.php" enctype="multipart/form-data">
             <h3 class="text-gray-900" style="text-align: center;"><?php echo $titulo ?></h3>
             <div class="form-group">
               <label for="">Competição</label>
@@ -305,8 +305,7 @@
             </div>
             <input type="hidden" name="ano" value="<?php echo date('Y') ?>">
             <label for="cidade">Cidade</label>
-            <select name="cidade"class="form-control" id="cidade" required>
-              <option value="">Selecione...</option>
+            <select name="cidade"class="form-control" id="cidade">
             </select>
             <label for="">Resultado</label>
             <?php 
@@ -326,7 +325,7 @@
                       <div class="card-body">
                         <i class="fas fa-file-pdf" style="color: red; font-size: 6.5rem;"></i>
                         <p>Resultados</p>
-                        <a href="<?php echo "tabelas/script_competicoes?documento=" . $pagina['documento'] . "&id=" . $pagina['id'] ?>" class="btn btn-danger">Apagar</a>
+                        <a href="<?php echo "../vendor/admin/script_competicoes?documento=" . $pagina['documento'] . "&id=" . $pagina['id'] ?>" class="btn btn-danger">Apagar</a>
                       </div>
                     </a>
                   </div>
@@ -380,7 +379,7 @@
         <div class="modal-body">Selecione "Sair" abaixo se você está preparado para finalizar essa sessão.</div>
         <div class="modal-footer">
           <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-          <a class="btn btn-primary" href="logout.php">Sair</a>
+          <a class="btn btn-primary" href="../vendor/admin/logout.php">Sair</a>
         </div>
       </div>
     </div>
@@ -403,12 +402,12 @@
       });
 
       $(function() {
-        var atual = "<?php echo $pagina['cidade'] ?>";
+        var atual = "<?php if(isset($pagina)) echo $pagina['cidade'] ?>";
         $.ajax({
             method: 'GET',
             url: 'https://servicodados.ibge.gov.br/api/v1/localidades/estados/pi/distritos',
             success: function(data) {
-                var resultado = '';
+                var resultado = '<option value="">Selecione...</option>';
                 // Recece os dados da api e transforma em option
                 data.forEach(cidade => {
                   if(cidade['nome'] + ' - PI' == atual) {

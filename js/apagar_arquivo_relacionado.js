@@ -18,7 +18,7 @@ $(function(){
 
         $.ajax({
             method: 'POST',
-            url: 'tabelas/delete_file_relacionado.php',
+            url: '../vendor/admin/delete_file_relacionado.php',
             data: 'id_arquivo=' + id + '&id_origem=' + id_origem + '&tabela=' + tabela + '&relacionamento=' + tabela_relacionada + '&' + campos + '&documento=' + documento + '&coluna_id=' + coluna_id + '&coluna_origem=' + coluna_origem + '&all=' + all,
             success: function(response) {
                 console.log(response);

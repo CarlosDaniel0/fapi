@@ -58,7 +58,7 @@ function enviarArquivo(indice, barra) {
 
     // Resposta em JSON
     request.responseType = 'json';
-    request.open('post', 'tabelas/upload_file.php');
+    request.open('post', '../vendor/admin/upload_file.php');
     request.send(data);
     }
 

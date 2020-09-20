@@ -1,5 +1,5 @@
 <?php
-  include('admin/conexao.php');
+  include('vendor/admin/conexao.php');
   include('var/variaveis.php');
   $nome = filter_input(INPUT_GET, 'nome', FILTER_SANITIZE_STRING);
 

@@ -1,8 +1,8 @@
 <?php
   session_start();
   // Verifica se o usuário está logado
-  include('verifica_login.php');
-  include('conexao.php');
+  include('../vendor/admin/verifica_login.php');
+  include('../vendor/admin/conexao.php');
   include('../var/variaveis.php');
 
   //Identifica o usuário logado de acordo com a base de dados.
@@ -69,7 +69,7 @@
         // parsGet = parsGet + '&titulo=' + document.getElementById('titulo').value + '&autor=' + document.getElementById('autor').value + '&texto=' + document.getElementById('texto').value;
         
         //muda o parâmetro action do formulário com os parmetros get
-        formulario.action = "cadastro_nota.php"+ parsGet;
+        formulario.action = "../vendor/admin/cadastro_nota.php"+ parsGet;
         
         //envia o formulário
         formulario.submit();
@@ -100,7 +100,7 @@
       </div>`;
     
     var bodyCadastro = 
-    `<form action="tabelas/cadastro_tabela" id="cadastro_tabela" method="post">
+    `<form action="../vendor/admin/cadastro_tabela" id="cadastro_tabela" method="post">
       <div class="col-md-12" style="margin: auto;">
         <div class="col">
           Documento
@@ -287,7 +287,7 @@
             endif;
             unset($_SESSION['sucesso_update']);
           ?>
-          <form method="POST" id="editor" action="cadastro_nota.php">
+          <form method="POST" id="editor" action="../vendor/admin/cadastro_nota.php">
             <h3 class="text-gray-900" style="text-align: center;"><?php echo $titulo ?></h3>
             <div class="form-group">
               <label for="">Nota</label>
@@ -411,7 +411,7 @@
         <div class="modal-body">Selecione "Sair" abaixo se você está preparado para finalizar essa sessão.</div>
         <div class="modal-footer">
           <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-          <a class="btn btn-primary" href="logout.php">Sair</a>
+          <a class="btn btn-primary" href="../vendor/admin/logout.php">Sair</a>
         </div>
       </div>
     </div>

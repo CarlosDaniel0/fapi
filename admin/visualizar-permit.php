@@ -1,8 +1,8 @@
 <?php
   session_start();
   // Verifica se o usuário está logado
-  include('verifica_login.php');
-  include('conexao.php');
+  include('../vendor/admin/verifica_login.php');
+  include('../vendor/admin/conexao.php');
   include('../var/variaveis.php');
 
   //Identifica o usuário logado de acordo com a base de dados.
@@ -59,7 +59,7 @@
         // parsGet = parsGet + '&titulo=' + document.getElementById('titulo').value + '&autor=' + document.getElementById('autor').value + '&texto=' + document.getElementById('texto').value;
         
         //muda o parâmetro action do formulário com os parmetros get
-        formulario.action = "cadastro_pagina.php"+ parsGet;
+        formulario.action = "../vendor/admin/cadastro_pagina.php"+ parsGet;
         
         //envia o formulário
         formulario.submit();

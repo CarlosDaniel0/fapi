@@ -1,5 +1,5 @@
 <?php
-  include('admin/conexao.php');
+  include('vendor/admin/conexao.php');
   include('var/variaveis.php');
 
   function data($data) {

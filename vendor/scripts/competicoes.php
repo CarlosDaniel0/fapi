@@ -1,6 +1,6 @@
 <?php 
     // Buscar e Retornar em JSON notas
-    include('../../admin/conexao.php');
+    include('../../vendor/admin/conexao.php');
 
     $ano = $_POST['ano'];
 

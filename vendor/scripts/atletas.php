@@ -1,5 +1,5 @@
 <?php 
-    include('../../admin/conexao.php');
+    include('../../vendor/admin/conexao.php');
 
     // Receber a requisicao de pesquisa
     $requestData = $_REQUEST;

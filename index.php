@@ -1,5 +1,5 @@
 <?php
-  include('admin/conexao.php');
+  include('vendor/admin/conexao.php');
   include('var/variaveis.php');
 
   $query = "SELECT * FROM noticia ORDER BY id DESC LIMIT 4";

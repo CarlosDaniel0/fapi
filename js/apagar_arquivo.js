@@ -5,7 +5,7 @@ $(function () {
         var id = $(this).attr('data-id');
 
         $.ajax({
-            url: "tabelas/delete_file.php",
+            url: "../vendor/admin/delete_file.php",
             type: 'POST',
             data: "name=" + name_file + "&tabela=" + tabela + "&coluna=" + coluna + "&id=" + id,
             datatype: 'html',

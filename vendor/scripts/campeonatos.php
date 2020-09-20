@@ -1,5 +1,5 @@
 <?php 
-    include('../../admin/conexao.php');
+    include('../../vendor/admin/conexao.php');
 
     $ano = $_POST['ano'];
     $tabela = $_POST['tabela'];

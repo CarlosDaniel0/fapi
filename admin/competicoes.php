@@ -1,8 +1,8 @@
 <?php
   session_start();
   // Verifica se o usuário está logado
-  include('verifica_login.php');
-  include('conexao.php');
+  include('../vendor/admin/verifica_login.php');
+  include('../vendor/admin/conexao.php');
   include('../var/variaveis.php');
 
   //Identifica o usuário logado de acordo com a base de dados.
@@ -273,7 +273,7 @@
               <td>
                 <div class="row">
                   <a href="<?php echo "editor-competicoes?id=" . $row_pagina['id'] ?>" class="btn btn-warning mr-2">Editar</a>
-                  <a href="<?php echo "apagar_competicao?id=" . $row_pagina['id'] . "&documento=" . $row_pagina['documento'] ?>" class="btn btn-danger">Apagar</a>
+                  <a href="<?php echo "../vendor/admin/apagar_competicao?id=" . $row_pagina['id'] . "&documento=" . $row_pagina['documento'] ?>" class="btn btn-danger">Apagar</a>
                 </div>
               </td>
             </tr>
@@ -362,7 +362,7 @@
         <div class="modal-body">Selecione "Sair" abaixo se você está preparado para finalizar essa sessão.</div>
         <div class="modal-footer">
           <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-          <a class="btn btn-primary" href="logout.php">Sair</a>
+          <a class="btn btn-primary" href="../vendor/admin/logout.php">Sair</a>
         </div>
       </div>
     </div>
@@ -377,17 +377,6 @@
 
   <!-- Custom scripts for all pages-->
   <script src="../js/sb-admin-2.min.js"></script>
-
-  <!-- Page level plugins -->
-  <script src="../vendor/chart.js/Chart.min.js"></script>
-
-  <!-- Page level custom scripts -->
-  <script src="../js/demo/chart-area-demo.js"></script>
-  <script src="../js/demo/chart-pie-demo.js"></script>
-
-  <script src="../js/ckeditor/ckeditor.js"></script>
-  <script src="../js/ckfinder/ckfinder.js"></script>
-  <script src="../js/javascript.js"></script>
 </body>
 
 </html>

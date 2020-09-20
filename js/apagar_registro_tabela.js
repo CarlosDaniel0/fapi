@@ -6,7 +6,7 @@ $(function () {
         if(name_file != '') {
             console.log(name_file);
             $.ajax({
-                url: "tabelas/delete_file.php",
+                url: "../vendor/admin/delete_file.php",
                 type: 'POST',
                 data: "name=" + name_file,
                 datatype: 'html',
@@ -18,7 +18,7 @@ $(function () {
         }
 
         $.ajax({
-            url: "tabelas/apagar_registro.php",
+            url: "../vendor/admin/apagar_registro.php",
             type: 'POST',
             data: "tabela=" + tabela + "&id=" + id,
             datatype: 'html',

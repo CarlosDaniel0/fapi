@@ -75,7 +75,7 @@
                     endif;
                     unset($_SESSION['campos']);
                   ?>
-                  <form class="user" method="POST" id="login" action="login.php">
+                  <form class="user" method="POST" id="login" action="../vendor/admin/login.php">
                     <div class="form-group">
                       <input type="email" class="form-control form-control-user" id="email" name="usuario" aria-describedby="emailHelp" placeholder="Endereço de Email...">
                     </div>

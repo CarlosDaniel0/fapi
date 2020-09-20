@@ -1,7 +1,7 @@
 <?php 
   session_start();
-  include('conexao.php');
-  include('verifica_login.php');
+  include('../vendor/admin/conexao.php');
+  include('../vendor/admin/verifica_login.php');
 ?>
 
 <!DOCTYPE html>

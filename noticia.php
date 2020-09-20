@@ -1,5 +1,5 @@
 <?php
-  include('admin/conexao.php');
+  include('vendor/admin/conexao.php');
   include('var/variaveis.php');
   $id = filter_input(INPUT_GET, 'id', FILTER_SANITIZE_NUMBER_INT) == 0 ? 1 : filter_input(INPUT_GET, 'id', FILTER_SANITIZE_NUMBER_INT);
 
@@ -13,7 +13,8 @@
 
   // Verifica se existe algum titulo de página na URL
   // Caso não exista retorna para a página inicial
-  $titulo = filter_input(INPUT_GET, 'titulo', FILTER_SANITIZE_NUMBER_INT);
+  $titulo = filter_input(INPUT_GET, 'titulo', FILTER_SANITIZE_STRING);
+
   if ($id != $noticia['id'] || empty($titulo)) {
     header("Location: index");
   }
