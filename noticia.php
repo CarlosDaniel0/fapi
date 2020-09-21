@@ -200,7 +200,8 @@
               <div class="row">
                 <!-- Your share button code -->
                 <div class="fb-share-button" 
-                  data-href="https://www.your-domain.com/your-page.html" 
+                  data-href="https://www.your-domain.com/your-page.html"
+                  data-size="large"
                   data-layout="button_count">
                 </div>
               </div>
