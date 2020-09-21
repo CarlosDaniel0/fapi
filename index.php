@@ -28,7 +28,6 @@
             $novo_texto = trim(substr($texto, 0, $ultimo_espaco)).'...';
         }
     }
-
   //Retorna o valor formatado
   return $novo_texto;
   }

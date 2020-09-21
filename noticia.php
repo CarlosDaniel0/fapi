@@ -18,6 +18,29 @@
   if ($id != $noticia['id'] || empty($titulo)) {
     header("Location: index");
   }
+
+  function limita_caracteres($texto, $limite, $quebra = true) {
+    $tamanho = strlen($texto);
+    // Verifica se o tamanho do texto é menor ou igual ao limite
+    if ($tamanho <= $limite) {
+        $novo_texto = $texto;
+    // Se o tamanho do texto for maior que o limite
+    } else {
+        // Verifica a opção de quebrar o texto
+        if ($quebra == true) {
+            $novo_texto = trim(substr($texto, 0, $limite)).'...';
+        // Se não, corta $texto na última palavra antes do limite
+        } else {
+            // Localiza o útlimo espaço antes de $limite
+            $ultimo_espaco = strrpos(substr($texto, 0, $limite), ' ');
+            // Corta o $texto até a posição localizada
+            $novo_texto = trim(substr($texto, 0, $ultimo_espaco)).'...';
+        }
+    }
+
+  //Retorna o valor formatado
+  return $novo_texto;
+  }
 ?>
 
 <!doctype html>
@@ -28,6 +51,10 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta property="og:url"           content="<?php echo "fapi2020.000webhostapp.com/noticia?titulo=" . $titulo . "&id=" . $id ?>" />
+    <meta property="og:type"          content="article" />
+    <meta property="og:title"         content="<?php echo $noticia['titulo'] ?>" />
+    <meta property="og:image"         content="<?php echo "fapi2020.000webhostapp.com/files/images/" . $noticia['imagem'] ?>" />
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
@@ -166,9 +193,17 @@
     <section class="container">
       <div class="row">
         <div style="margin: auto;" id="conteudo" class="col-md-10">
-          <?php if ($noticia['id'] == $id): ?>
+            <?php if ($noticia['id'] == $id): ?>
               <h1 class="titulo"><?php echo $noticia['titulo'] ?></h1>
               <p class="informacao"><?php echo $noticia['autor'] . " <i class='far fa-clock'></i> " . data($noticia['criado_em'])?></p>
+              
+              <div class="row">
+                <!-- Your share button code -->
+                <div class="fb-share-button" 
+                  data-href="https://www.your-domain.com/your-page.html" 
+                  data-layout="button_count">
+                </div>
+              </div>
             <?php endif; ?>
             <img class="img-fluid img mt-4" width="100%" src="<?php echo "files/images/" . $noticia['imagem'];?>" alt="">
             <br>
@@ -228,5 +263,16 @@
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script async defer crossorigin="anonymous" src="https://connect.facebook.net/pt_BR/sdk.js#xfbml=1&version=v8.0" nonce="DiI1Tt2J"></script>
+    <div id="fb-root"></div>
+    <script>
+    (function(d, s, id) {
+    var js, fjs = d.getElementsByTagName(s)[0];
+    if (d.getElementById(id)) return;
+    js = d.createElement(s); js.id = id;
+    js.src = "https://connect.facebook.net/pt_BR/sdk.js#xfbml=1&version=v3.0";
+    fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'facebook-jssdk'));
+    </script>
   </body>
 </html>

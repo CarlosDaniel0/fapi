@@ -4,7 +4,7 @@
     $file = $_FILES['file'];
 
     $ret = [];
-    $exetensao = substr($file["name"], -4);
+    $exetensao = "." . pathinfo($file['name'], PATHINFO_EXTENSION);
     $nome = pathinfo($file["name"], PATHINFO_FILENAME) . "_" . date('dmY') . "_" . time() . $exetensao;
 
     if (move_uploaded_file($file['tmp_name'], '../../files/documents/' . $nome)) {

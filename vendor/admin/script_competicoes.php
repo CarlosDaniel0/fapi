@@ -42,7 +42,7 @@
             }
         }
 
-        $extensao =  substr($_FILES['arquivo']['name'], -4);
+        $extensao = pathinfo($_FILES['arquivo']['name'], PATHINFO_EXTENSION);
         $nome =  pathinfo($_FILES['arquivo']['name'], PATHINFO_FILENAME) . "_" . date('dmY') . "_" . time() . $extensao;
         if (move_uploaded_file($_FILES['arquivo']['tmp_name'], $diretorio . $nome)) {
             $update .= ",documento='" . $nome . "'";
@@ -78,7 +78,7 @@
         }
     }
 
-    $extensao =  substr($_FILES['arquivo']['name'], -4);
+    $extensao =  pathinfo($_FILES['arquivo']['name'], PATHINFO_EXTENSION);
     $nome =  pathinfo($_FILES['arquivo']['name'], PATHINFO_FILENAME) . "_" . date('dmY') . "_" . time() . $extensao;
     if (move_uploaded_file($_FILES['arquivo']['tmp_name'], $diretorio . $nome)){
         $campos .= ',documento';

@@ -39,7 +39,7 @@
         $autor = $_POST['autor'];
         $texto = escape_mimic($_POST['texto']);
 
-        $extensao = strtolower(substr($_FILES['imagem']['name'], -4));
+        $extensao = "." . pathinfo($_FILES['imagem']['name'], PATHINFO_EXTENSION);
         $query_select = "SELECT imagem FROM noticia WHERE id = '{$id}'";
         $result = mysqli_query($conexao, $query_select);
         $imagem = mysqli_fetch_assoc($result);
@@ -70,7 +70,7 @@
         $titulo = escape_mimic($_POST['titulo']);
         $autor = $_POST['autor'];
         $texto =  escape_mimic($_POST['texto']);
-        $extensao = strtolower(substr($_FILES['imagem']['name'], -4)); //Pega extensão
+        $extensao = "." . pathinfo($_FILES['imagem']['name'], PATHINFO_EXTENSION); //Pega extensão
         $novo_nome = pathinfo($_FILES['imagem']['name'], PATHINFO_FILENAME) . "_" . date('dmY') . "_" . time() . $extensao;
         
         move_uploaded_file($_FILES['imagem']['tmp_name'], $diretorio.$novo_nome);
